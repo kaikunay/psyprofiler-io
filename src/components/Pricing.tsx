@@ -57,7 +57,10 @@ const faqs = [
   "DO YOU OFFER VOLUME DISCOUNTS FOR ENTERPRISES?",
 ];
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function Pricing() {
+  const { openAuthModal } = useAuth();
   return (
     <section id="pricing" className="py-24 px-6">
       <div className="max-w-7xl mx-auto space-y-16">
@@ -129,9 +132,9 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <a href="#intel" className={`block text-center w-full font-display font-bold text-sm py-3 tracking-wide transition-colors ${tier.ctaStyle}`}>
-                JOIN WAITLIST FOR THIS LEVEL →
-              </a>
+              <button onClick={openAuthModal} className={`block text-center w-full font-display font-bold text-sm py-3 tracking-wide transition-colors ${tier.ctaStyle}`}>
+                INITIALIZE FOR THIS LEVEL →
+              </button>
             </motion.div>
           ))}
         </div>
@@ -150,9 +153,9 @@ export default function Pricing() {
             <span className="text-gold">₹750</span>
             <span className="text-muted text-sm font-normal ml-2">($9 USD)</span>
           </p>
-          <a href="#intel" className="inline-block border border-violet-500/40 text-violet-200 font-mono text-xs tracking-widest px-6 py-2 hover:bg-violet-500/10 transition-colors">
-            JOIN WAITLIST FOR AD-HOC →
-          </a>
+          <button onClick={openAuthModal} className="inline-block border border-violet-500/40 text-violet-200 font-mono text-xs tracking-widest px-6 py-2 hover:bg-violet-500/10 transition-colors">
+            INITIALIZE AD-HOC SECURE ACCESS →
+          </button>
         </motion.div>
 
         {/* FAQ */}

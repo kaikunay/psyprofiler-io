@@ -11,11 +11,17 @@ export const metadata: Metadata = {
   description: "Psychological intelligence at machine speed.",
 };
 
+import { AuthProvider } from "@/context/AuthContext";
+import AuthModal from "@/components/AuthModal";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body className="bg-void text-ink font-body antialiased overflow-x-hidden" suppressHydrationWarning>
-        {children}
+        <AuthProvider>
+          <AuthModal />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

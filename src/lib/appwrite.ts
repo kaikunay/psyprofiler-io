@@ -1,4 +1,4 @@
-import { Client, Databases, ID } from 'appwrite';
+import { Client, Databases, Account, ID } from 'appwrite';
 
 const client = new Client();
 
@@ -13,4 +13,5 @@ client
 console.log(`[Appwrite Init] Endpoint: ${endpoint}, ProjectID length: ${projectId.length}`);
 
 export const databases = new Databases(client);
+export const account = new Account(client);
 export { ID };

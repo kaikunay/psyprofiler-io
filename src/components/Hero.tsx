@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import AuroraBeams from "@/components/effects/AuroraBeams";
-import { databases, ID } from "@/lib/appwrite";
+import { useAuth } from "@/context/AuthContext";
 
 const TERMINAL_LINES = [
   "> DECRYPTING NEURAL PATHWAY 7... SUCCESS",
@@ -94,36 +94,7 @@ function TerminalPanel() {
 }
 
 export default function Hero() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const handleJoinWaitlist = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setStatus("loading");
-    setErrorMsg("");
-
-    try {
-      await databases.createDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_WAITLIST_COLLECTION_ID!,
-        ID.unique(),
-        {
-          email: email,
-          addedDate: new Date().toISOString()
-        }
-      );
-      setStatus("success");
-      setEmail("");
-    } catch (error: any) {
-      console.error("Waitlist error:", error);
-      setStatus("error");
-      const debugInfo = `Proj: ${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID ? 'Exists' : 'MISSING'}`;
-      setErrorMsg(`${error.message || "Failed to fetch"}. [${debugInfo}]`);
-    }
-  };
+  const { user, openAuthModal } = useAuth();
 
   return (
     <section id="intel" className="relative min-h-screen pt-24 pb-20 px-6 flex items-center overflow-hidden">
@@ -177,45 +148,27 @@ export default function Hero() {
             People are beautifully complex, but their digital habits always leave a trail. Our AI gently decodes their public footprint—giving you a deep, empathetic, and scarily accurate roadmap to their mind.
           </motion.p>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            onSubmit={handleJoinWaitlist}
-            className="flex flex-col relative"
-          >
-            <div className="flex gap-3">
-              <input
-                type="email"
-                required
-                disabled={status === "loading" || status === "success"}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ENTER SECURE EMAIL..."
-                className="flex-1 bg-surface border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 placeholder:text-dim focus:outline-none focus:border-violet-400 transition-colors disabled:opacity-50"
-              />
-              <button 
-                type="submit" 
-                disabled={status === "loading" || status === "success"}
-                className={`bg-gold hover:bg-gold-light text-void font-display font-bold text-sm px-6 py-3 transition-colors whitespace-nowrap disabled:opacity-80 disabled:cursor-not-allowed ${status === "success" ? "bg-success hover:bg-success text-void" : ""}`}
-              >
-                {status === "loading" ? "ENCRYPTING..." : status === "success" ? "ACCESS GRANTED" : "JOIN THE WAITLIST"}
-              </button>
-            </div>
-
-            {/* Status Messages */}
-            {status === "success" && (
-              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="absolute -bottom-8 left-0 font-mono text-[11px] text-success glow-text-success tracking-widest">
-                ✓ EMAIL SECURED. WATCH FOR INSTRUCTIONS.
-              </motion.p>
-            )}
-            
-            {status === "error" && (
-              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="absolute -bottom-8 left-0 font-mono text-[11px] text-danger tracking-widest max-w-[400px] truncate">
-                ⚠ {errorMsg.toUpperCase()}
-              </motion.p>
-            )}
-          </motion.form>
+          {user ? (
+            <motion.a
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              href="/dashboard"
+              className="inline-block text-center w-full max-w-sm bg-gold hover:bg-gold-light text-void font-display font-bold text-sm px-6 py-4 transition-colors"
+            >
+              ACCESS COMMAND CENTER
+            </motion.a>
+          ) : (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              onClick={openAuthModal}
+              className="w-full max-w-sm bg-violet-600 hover:bg-violet-500 text-white font-display font-bold text-sm px-6 py-4 transition-colors shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] flex items-center justify-center gap-3"
+            >
+              INITIALIZE SECURE ACCESS
+            </motion.button>
+          )}
 
           <motion.p
             initial={{ opacity: 0 }}
