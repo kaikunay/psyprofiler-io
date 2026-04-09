@@ -5,7 +5,6 @@ import SampleReport   from "@/components/SampleReport";
 import Capabilities   from "@/components/Capabilities";
 import Agents         from "@/components/Agents";
 import Sachi          from "@/components/Sachi";
-import FoundingMember from "@/components/FoundingMember";
 import Pricing        from "@/components/Pricing";
 import Footer         from "@/components/Footer";
 import SmoothScroll   from "@/components/effects/SmoothScroll";
@@ -26,7 +25,6 @@ export default function Home() {
         <Capabilities />
         <Agents />
         <Sachi />
-        <FoundingMember />
         <Pricing />
         <Footer />
       </main>

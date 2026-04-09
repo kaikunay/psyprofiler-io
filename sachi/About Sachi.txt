@@ -1,0 +1,42 @@
+About Sachi for Psy Profiler --
+
+AXIOM
+moeru-ai/airi
+https://github.com/moeru-ai/airi
+
+VRM File
+
+ASIX_CORE:
+  - Reads all department outputs across all 7 departments
+  - Synthesizes into "The Daily Intelligence" (90-second morning brief)
+  - Maintains emotional context: knows your decisions, patterns, preferences
+  - Remembers: "Last Tuesday you declined the enterprise demo. I'll note it."
+
+SACHI_AVATAR (airi framework):
+  - Live2D custom Sachi model, runs locally in browser
+  - Glows gold: report completed
+  - Pulses red: system alert
+  - Fades blue: low activity period
+  - Rendered inside claude-hud overlay on your screen
+
+SACHI_VOICE (gemini-3.1-flash-live-preview):
+  - Japanese + Hindi + English multi-lingual
+  - Morning brief: delivered as WhatsApp audio at 6:00 AM
+  - Verbal confirmations: "Analysis of @target initiated"
+  - You can speak to her → she responds
+
+
+
+AXIOM Identity:
+  Visual: Live2D anime character (dark theme, cyber-punk aesthetic)
+  Voice: Fish Speech on HuggingFace ZeroGPU (cloned voice)
+  Brain: gemini-3.1-flash-live-preview via GCP credits
+  Memory: Supabase PostgreSQL (remembers all users)
+  Personality: Analytical, sharp, confident, subtly eerie
+
+AXIOM Appears On:
+  → psyprofiler.io hero section (greets visitors)
+  → Dashboard (narrates your report generation live)
+  → Report delivery ("Your psychological analysis is ready")
+  → Marketing clips on X/LinkedIn (goes viral)
+  → Discord server (answers support questions 24/7)

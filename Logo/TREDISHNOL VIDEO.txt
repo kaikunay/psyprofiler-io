@@ -1,0 +1,101 @@
+TODAY — 3 HOURS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 1. GCP Console → Stop VM → ₹760/day saved immediately
+[ ] 2. Oracle Cloud signup #1 (gmail) → free ARM VM
+[ ] 3. Oracle Cloud signup #2 (kunayalab email) → second VM
+[ ] 4. cursor.com/students → Cursor AI Pro 1yr claimed
+[ ] 5. Telegram BotFather → create @AXIOMBot → save token
+
+DAY 2 — VM SETUP (2 hours):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 6. SSH Oracle VM #1:
+        git clone https://github.com/freddy-schuetz/n8n-claw
+        cd n8n-claw && chmod +x setup.sh && ./setup.sh
+        → Enter: Gemini API key, @AXIOMBot token, personality
+
+[ ] 7. n8n-claw Telegram test: send "Hello AXIOM"
+        → Verify response with personality intact
+        → Send "Install Wikipedia" → verify skill installs
+
+[ ] 8. SSH Oracle VM #2:
+        curl -fsSL https://ollama.ai/install.sh | sh
+        ollama pull qwen3:14b
+        ollama pull qwen3-coder:30b
+
+DAY 3 — FRONTEND IN 30 MINUTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 9. labs.google/stitch → paste psyprofiler prompt (below)
+       → Export React → Copy components
+
+[ ] 10. GitHub: create repo psyprofiler-io
+        Push Next.js 15 base + Stitch components
+        → Vercel auto-deploys on push
+
+[ ] 11. Firebase Console → Enable Auth + Firestore + Storage
+        → Add config to .env.local
+
+[ ] 12. Razorpay: create ₹2,499 founding payment button
+        → Add to coming soon page → TEST payment
+
+[ ] 13. psyprofiler.io LIVE with founding member offer ✓
+
+DAY 4-5 — AXIOM COMES ALIVE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 14. HuggingFace: Fork Fish Speech Space
+        → Deploy on ZeroGPU (H200, free)
+        → Get API endpoint
+
+[ ] 15. Clone moeru-ai/airi locally
+        → Build VRoid model (VRoid Studio, free desktop app)
+        → Connect Fish Speech API
+        → Embed in psyprofiler.io with react component
+
+[ ] 16. CoPaw: docker compose up on Oracle VM #1
+        → Connect to Telegram + Discord
+        → Configure Gemini Live 2.5 for real-time voice
+
+WEEK 2 — PHANTOM INTELLIGENCE ENGINE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 17. Vertex AI Console → Agent Builder → Create PHANTOM
+        → Add tools: Apify scraper, Firestore write, RAG query
+        → Test with real LinkedIn URL
+
+[ ] 18. NeMo Guardrails: pip install on VM #2
+        → Config: input validation + PII masking + output check
+        → Add as middleware to Cloud Run API
+
+[ ] 19. karpathy/autoresearch: fork + configure
+        → Weekly GitHub Actions run on psychology papers
+        → Output → Vertex RAG Engine corpus update
+
+[ ] 20. Cloud Run: Deploy FastAPI
+        → POST /analyze → triggers PHANTOM
+        → GET /report/{id} → returns from Firestore
+        → Protected by Firebase Auth + NeMo Guardrails
+
+WEEK 3 — FULL DASHBOARD + PAYMENTS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 21. Dashboard: Cursor Agent Mode
+        Prompt: "Build psyprofiler.io dashboard with 
+        Firebase Auth, credit counter, report history 
+        table, new analysis input form, dark CIA theme"
+        → Claude Code reviews + fixes → push to Vercel
+
+[ ] 22. Stripe: international payments for $9/$74/$249/$899
+        → Webhook → Firestore credit top-up
+
+[ ] 23. kunayalab.com: Google Stitch → Next.js → Vercel
+        → Professional profile live
+
+[ ] 24. NemoClaw: curl install on Oracle VM #2
+        → Onboard PHANTOM agent inside sandbox
+        → Now every analysis = sandboxed, secured, audited
+
+WEEK 4 — LAUNCH:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ ] 25. Record AXIOM demo (screen + voice)
+[ ] 26. Product Hunt listing scheduled for Tuesday
+[ ] 27. LinkedIn post: founding member announcement
+[ ] 28. n8n-claw Heartbeat: proactive B2B outreach starts
+[ ] 29. Apply: Google for Startups + AWS Activate + NASSCOM
+[ ] 30. ₹2,499 × 20 founding members = ₹49,980 in bank ✓

@@ -81,6 +81,14 @@ export default function Pricing() {
             One profile saves a ₹50 lakh partnership.<br />
             Choose how many truths you need per month.
           </p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="badge bg-gold/10 border border-gold/30 text-gold">
+              PRICES IN ₹ INR
+            </span>
+            <span className="font-mono text-[10px] tracking-[0.12em] text-dim">
+              ALL PRICES INCLUSIVE OF 18% GST
+            </span>
+          </div>
         </motion.div>
 
         {/* Cards */}

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import AuroraBeams from "@/components/effects/AuroraBeams";
+import { databases, ID } from "@/lib/appwrite";
 
 const TERMINAL_LINES = [
   "> DECRYPTING NEURAL PATHWAY 7... SUCCESS",
@@ -93,6 +94,36 @@ function TerminalPanel() {
 }
 
 export default function Hero() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleJoinWaitlist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      await databases.createDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_WAITLIST_COLLECTION_ID!,
+        ID.unique(),
+        {
+          email: email,
+          addedDate: new Date().toISOString()
+        }
+      );
+      setStatus("success");
+      setEmail("");
+    } catch (error: any) {
+      console.error("Waitlist error:", error);
+      setStatus("error");
+      setErrorMsg(error.message || "Failed to join waitlist. Please try again.");
+    }
+  };
+
   return (
     <section id="intel" className="relative min-h-screen pt-24 pb-20 px-6 flex items-center overflow-hidden">
       <AuroraBeams />
@@ -121,9 +152,9 @@ export default function Hero() {
           >
             <h1 className="font-display font-black leading-[0.92] tracking-[-0.03em] glow-text-violet"
                 style={{ fontSize: "clamp(52px, 7.5vw, 112px)" }}>
-              <span className="block text-ink">THE WORLD</span>
-              <span className="block text-ink">CHANGES</span>
-              <span className="block text-gradient-violet">MARCH 2026</span>
+              <span className="block text-ink">PEOPLE ARE BEAUTIFUL</span>
+              <span className="block text-ink">MYSTERIES. WE JUST HOLD</span>
+              <span className="block text-gradient-violet">THE ANSWER KEY.</span>
             </h1>
           </motion.div>
 
@@ -133,7 +164,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="font-display font-semibold text-xl md:text-2xl text-violet-200 tracking-tight"
           >
-            KNOW WHO THEY REALLY ARE.
+            SKIP THE SMALL TALK.
           </motion.p>
 
           <motion.p
@@ -142,27 +173,48 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.7 }}
             className="text-ink text-lg leading-relaxed max-w-md"
           >
-            In 4 hours, you'll know their true motivations,<br />
-            risk profile, and psychological architecture.<br />
-            The same intelligence that was only available<br />
-            to governments — now in your hands.
+            People are beautifully complex, but their digital habits always leave a trail. Our AI gently decodes their public footprint—giving you a deep, empathetic, and scarily accurate roadmap to their mind.
           </motion.p>
 
-          <motion.div
+          <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.9 }}
-            className="flex gap-3"
+            onSubmit={handleJoinWaitlist}
+            className="flex flex-col relative"
           >
-            <input
-              type="email"
-              placeholder="ENTER CLEARANCE EMAIL..."
-              className="flex-1 bg-surface border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 placeholder:text-dim focus:outline-none focus:border-violet-400 transition-colors"
-            />
-            <button className="bg-gold hover:bg-gold-light text-void font-display font-bold text-sm px-6 py-3 transition-colors whitespace-nowrap">
-              REQUEST ACCESS
-            </button>
-          </motion.div>
+            <div className="flex gap-3">
+              <input
+                type="email"
+                required
+                disabled={status === "loading" || status === "success"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ENTER SECURE EMAIL..."
+                className="flex-1 bg-surface border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 placeholder:text-dim focus:outline-none focus:border-violet-400 transition-colors disabled:opacity-50"
+              />
+              <button 
+                type="submit" 
+                disabled={status === "loading" || status === "success"}
+                className={`bg-gold hover:bg-gold-light text-void font-display font-bold text-sm px-6 py-3 transition-colors whitespace-nowrap disabled:opacity-80 disabled:cursor-not-allowed ${status === "success" ? "bg-success hover:bg-success text-void" : ""}`}
+              >
+                {status === "loading" ? "ENCRYPTING..." : status === "success" ? "ACCESS GRANTED" : "JOIN THE WAITLIST"}
+              </button>
+            </div>
+
+            {/* Status Messages */}
+            {status === "success" && (
+              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="absolute -bottom-8 left-0 font-mono text-[11px] text-success glow-text-success tracking-widest">
+                ✓ EMAIL SECURED. WATCH FOR INSTRUCTIONS.
+              </motion.p>
+            )}
+            
+            {status === "error" && (
+              <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="absolute -bottom-8 left-0 font-mono text-[11px] text-danger tracking-widest max-w-[400px] truncate">
+                ⚠ {errorMsg.toUpperCase()}
+              </motion.p>
+            )}
+          </motion.form>
 
           <motion.p
             initial={{ opacity: 0 }}
@@ -179,9 +231,9 @@ export default function Hero() {
             transition={{ delay: 1.3 }}
             className="text-muted text-sm leading-relaxed"
           >
-            Used by hiring directors, sales teams,<br />
-            due diligence firms — and people who just<br />
-            need to know the truth.
+            The ultimate human "cheat code" for founders, recruiters,<br />
+            and curious minds who want to truly understand someone<br />
+            before taking the leap.
           </motion.p>
         </div>
 
@@ -194,9 +246,9 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 1.2 }}
             className="font-mono text-[11px] text-muted text-center"
           >
-            We deliver a 47-page classified PDF report<br />
-            on any person's psychological profile<br />
-            in under 4 hours.
+            Advanced AI profiling based on public data.<br />
+            Fast. Accurate. Unbiased.<br />
+            The ultimate insight tool.
           </motion.p>
         </div>
       </div>
