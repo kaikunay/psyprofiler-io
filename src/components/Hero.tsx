@@ -120,7 +120,8 @@ export default function Hero() {
     } catch (error: any) {
       console.error("Waitlist error:", error);
       setStatus("error");
-      setErrorMsg(error.message || "Failed to join waitlist. Please try again.");
+      const debugInfo = `Proj: ${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID ? 'Exists' : 'MISSING'}`;
+      setErrorMsg(`${error.message || "Failed to fetch"}. [${debugInfo}]`);
     }
   };
 
