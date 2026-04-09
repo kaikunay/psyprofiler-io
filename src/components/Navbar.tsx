@@ -33,7 +33,7 @@ export default function Navbar() {
 
         {/* Nav Links */}
         <div className="hidden md:flex items-center gap-8">
-          {["INTEL", "AGENTS", "FOUNDRY", "PRICING"].map((link) => (
+          {["INTEL", "AGENTS", "PRICING"].map((link) => (
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
@@ -50,10 +50,11 @@ export default function Navbar() {
             CLEARANCE: PUBLIC
           </span>
           <a
-            href="#founding"
-            className="bg-gold text-void font-display font-bold text-xs tracking-wide px-4 py-2 hover:bg-gold-light transition-colors duration-200"
+            href="#intel"
+            className="bg-gold/10 border border-gold/30 text-gold font-mono text-[10px] tracking-widest px-4 py-2 flex items-center gap-2 hover:bg-gold/20 transition-colors"
           >
-            REQUEST ACCESS →
+            <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse2" />
+            WAITLIST
           </a>
         </div>
       </div>

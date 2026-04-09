@@ -6,9 +6,10 @@ export default function Sachi() {
     <section className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 60, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="mb-12"
         >
           <span className="badge bg-gold/10 border border-gold/30 text-gold">
@@ -20,10 +21,10 @@ export default function Sachi() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
           {/* Avatar Box */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0, scale: 0.95, y: 40 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-2"
           >
             <div className="glass glow-violet aspect-[3/4] flex flex-col items-center justify-center space-y-3">
@@ -40,10 +41,10 @@ export default function Sachi() {
 
           {/* Content */}
           <motion.div
-            initial={{ opacity: 0, x: 32 }}
+            initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 1.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-3 space-y-6"
           >
             <span className="font-mono text-[10px] tracking-[0.18em] text-dim uppercase">

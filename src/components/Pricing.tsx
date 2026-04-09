@@ -63,9 +63,10 @@ export default function Pricing() {
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 60, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="space-y-4"
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
@@ -96,10 +97,10 @@ export default function Pricing() {
           {tiers.map((tier, i) => (
             <motion.div
               key={tier.level}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
+              initial={{ opacity: 0, y: 80, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-5%" }}
+              transition={{ duration: 1.4, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
               className={`relative glass p-6 space-y-6 ${
                 tier.recommended ? "glow-gold border-gold/30" : "hover:border-violet-400/30"
               } transition-all`}
@@ -128,18 +129,19 @@ export default function Pricing() {
                   </li>
                 ))}
               </ul>
-              <button className={`w-full font-display font-bold text-sm py-3 tracking-wide transition-colors ${tier.ctaStyle}`}>
-                {tier.cta}
-              </button>
+              <a href="#intel" className={`block text-center w-full font-display font-bold text-sm py-3 tracking-wide transition-colors ${tier.ctaStyle}`}>
+                JOIN WAITLIST FOR THIS LEVEL →
+              </a>
             </motion.div>
           ))}
         </div>
 
         {/* Ad-hoc */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="text-center space-y-3"
         >
           <p className="font-mono text-[11px] tracking-[0.18em] text-dim">NEED A SINGLE SCAN?</p>
@@ -148,9 +150,9 @@ export default function Pricing() {
             <span className="text-gold">₹750</span>
             <span className="text-muted text-sm font-normal ml-2">($9 USD)</span>
           </p>
-          <button className="border border-violet-500/40 text-violet-200 font-mono text-xs tracking-widest px-6 py-2 hover:bg-violet-500/10 transition-colors">
-            PURCHASE SINGLE REPORT →
-          </button>
+          <a href="#intel" className="inline-block border border-violet-500/40 text-violet-200 font-mono text-xs tracking-widest px-6 py-2 hover:bg-violet-500/10 transition-colors">
+            JOIN WAITLIST FOR AD-HOC →
+          </a>
         </motion.div>
 
         {/* FAQ */}

@@ -151,7 +151,7 @@ export default function Hero() {
             transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <h1 className="font-display font-black leading-[0.92] tracking-[-0.03em] glow-text-violet"
-                style={{ fontSize: "clamp(52px, 7.5vw, 112px)" }}>
+                style={{ fontSize: "clamp(42px, 6.5vw, 92px)" }}>
               <span className="block text-ink">PEOPLE ARE BEAUTIFUL</span>
               <span className="block text-ink">MYSTERIES. WE JUST HOLD</span>
               <span className="block text-gradient-violet">THE ANSWER KEY.</span>

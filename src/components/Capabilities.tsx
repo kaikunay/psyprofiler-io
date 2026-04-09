@@ -39,9 +39,10 @@ export default function Capabilities() {
     <section id="foundry" className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 60, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="mb-16 space-y-6"
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
@@ -62,10 +63,10 @@ export default function Capabilities() {
           {modules.map((m, i) => (
             <motion.div
               key={m.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
+              initial={{ opacity: 0, y: 80, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-5%" }}
+              transition={{ duration: 1.4, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <TiltCard>
                 <div className="flex items-center justify-between">

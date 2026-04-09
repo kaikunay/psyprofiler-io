@@ -16,9 +16,10 @@ export default function SampleReport() {
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-12 space-y-3"
         >
           <span className="badge bg-danger/10 border border-danger/30 text-danger">
@@ -32,9 +33,10 @@ export default function SampleReport() {
 
         {/* Report Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 60, scale: 0.93 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
           className="relative"
         >
           {/* CLASSIFIED stamp */}
@@ -133,20 +135,20 @@ export default function SampleReport() {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mt-10 space-y-3"
         >
           <p className="font-mono text-[11px] text-dim tracking-widest">
             YOUR REPORT WILL BE FULLY UNREDACTED
           </p>
           <a
-            href="#founding"
-            className="inline-block bg-gold hover:bg-gold-light text-void font-display font-black text-sm px-8 py-4 transition-colors"
+            href="#intel"
+            className="inline-block bg-gold hover:bg-gold-light text-void font-display font-black text-sm px-8 py-4 transition-colors shadow-lg shadow-gold/20 hover:shadow-gold/40"
           >
-            REQUEST YOUR FIRST ANALYSIS →
+            JOIN WAITLIST FOR ACCESS →
           </a>
         </motion.div>
 

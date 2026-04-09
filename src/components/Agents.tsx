@@ -16,10 +16,10 @@ export default function Agents() {
     <section id="agents" className="py-24 px-6 bg-deep/50">
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 60, filter: "blur(8px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="mb-16 space-y-6"
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
@@ -46,10 +46,10 @@ export default function Agents() {
             {agents.map((agent, i) => (
               <motion.div
                 key={agent.id}
-                initial={{ opacity: 0, x: -32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                initial={{ opacity: 0, x: -40, filter: "blur(4px)" }}
+                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, margin: "-5%" }}
+                transition={{ duration: 1.2, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className="flex items-start gap-6 group"
               >
                 {/* Node */}
