@@ -110,7 +110,7 @@ export default function Dashboard() {
               INTELLIGENCE COMMAND CENTER
             </span>
             <h1 className="font-display font-black text-3xl md:text-5xl text-ink tracking-tight mt-2">
-              WELCOME BACK, <span className="text-gradient-violet uppercase">{user.email?.split('@')[0] || 'OPERATIVE'}</span>.
+              WELCOME BACK, <span className="text-gradient-violet uppercase">{user?.email?.split('@')[0] || 'OPERATIVE'}</span>.
             </h1>
           </div>
         </div>
@@ -120,8 +120,8 @@ export default function Dashboard() {
           <div className="glass p-6 border-l-2 border-l-violet-500 relative overflow-hidden">
             <h3 className="font-mono text-[10px] tracking-widest text-dim mb-4">ACTIVE PROFILE</h3>
             <div className="space-y-2 relative z-10">
-              <p className="font-mono text-sm text-ink">{user.email}</p>
-              <p className="font-mono text-[10px] text-muted tracking-widest truncate">ID: {user.$id}</p>
+              <p className="font-mono text-sm text-ink">{user?.email}</p>
+              <p className="font-mono text-[10px] text-muted tracking-widest truncate">ID: {user?.$id}</p>
               <p className="font-mono text-[10px] text-success mt-4 tracking-widest">● STATUS: SECURE CONNECTION</p>
             </div>
             <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl" />
