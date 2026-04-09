@@ -37,7 +37,11 @@ export default function AuthModal() {
 
     try {
       if (view === "magic") {
-        await account.createEmailToken(ID.unique(), email);
+        await account.createMagicURLToken(
+          ID.unique(),
+          email,
+          `${window.location.origin}/dashboard`
+        );
         setStatus("success");
       } else if (view === "signup") {
         // Appwrite requires user creation then login

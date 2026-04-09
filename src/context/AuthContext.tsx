@@ -34,7 +34,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    checkSession();
+    const completeLoginAndCheckSession = async () => {
+      // Check for magic link parameters in the URL
+      if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("userId");
+        const secret = urlParams.get("secret");
+
+        if (userId && secret) {
+          try {
+            await account.updateMagicURLSession(userId, secret);
+            // Clean the URL without causing a page reload
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch (error) {
+            console.error("Magic link verification failed:", error);
+          }
+        }
+      }
+      
+      await checkSession();
+    };
+
+    completeLoginAndCheckSession();
   }, []);
 
   const openAuthModal = () => setIsModalOpen(true);

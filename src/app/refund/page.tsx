@@ -33,7 +33,7 @@ export default function RefundPage() {
           <h2 className="legal-heading">1. OVERVIEW</h2>
           <div className="legal-body">
             <p>
-              This Refund & Cancellation Policy (&ldquo;Policy&rdquo;) applies to all subscriptions, ad-hoc purchases, and services offered through PsyProfiler.io, operated by Kunaya Labs.
+              This Refund & Cancellation Policy (&ldquo;Policy&rdquo;) applies to all subscriptions, ad-hoc purchases, and services offered through PsyProfiler.io, operated by Kunaya Lab.
             </p>
             <p>
               This Policy is issued in compliance with:
@@ -261,7 +261,7 @@ export default function RefundPage() {
               <p><strong className="text-ink">Refund Requests:</strong> <a href="mailto:support@psyprofiler.io" className="text-violet-400 hover:text-violet-200">support@psyprofiler.io</a></p>
               <p><strong className="text-ink">Billing Inquiries:</strong> <a href="mailto:billing@psyprofiler.io" className="text-violet-400 hover:text-violet-200">billing@psyprofiler.io</a></p>
               <p><strong className="text-ink">Escalation:</strong> <a href="mailto:grievance@psyprofiler.io" className="text-violet-400 hover:text-violet-200">grievance@psyprofiler.io</a></p>
-              <p><strong className="text-ink">Address:</strong> Kunaya Labs, Bhandara, Maharashtra 441904, India</p>
+              <p><strong className="text-ink">Address:</strong> Kunaya Lab, Bhandara, Maharashtra 441904, India</p>
             </div>
           </div>
         </section>

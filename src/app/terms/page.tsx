@@ -3,7 +3,7 @@ import LegalLayout from "@/components/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions — PSYPROFILER",
-  description: "Terms and Conditions governing the use of PsyProfiler.io, the AI-powered psychological intelligence platform by Kunaya Labs.",
+  description: "Terms and Conditions governing the use of PsyProfiler.io, the AI-powered psychological intelligence platform by Kunaya Lab.",
 };
 
 const toc = [
@@ -38,13 +38,13 @@ export default function TermsPage() {
           <h2 className="legal-heading">1. ACCEPTANCE OF TERMS</h2>
           <div className="legal-body">
             <p>
-              By accessing, browsing, or using the PsyProfiler.io platform (&ldquo;Platform&rdquo;, &ldquo;Service&rdquo;), operated by Kunaya Labs (&ldquo;Company&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;), a registered Micro, Small & Medium Enterprise (MSME) under the Government of India, you (&ldquo;User&rdquo;, &ldquo;you&rdquo;, &ldquo;your&rdquo;) agree to be bound by these Terms and Conditions (&ldquo;Terms&rdquo;).
+              By accessing, browsing, or using the PsyProfiler.io platform (&ldquo;Platform&rdquo;, &ldquo;Service&rdquo;), operated by Kunaya Lab (&ldquo;Company&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;), a registered Micro, Small & Medium Enterprise (MSME) under the Government of India, you (&ldquo;User&rdquo;, &ldquo;you&rdquo;, &ldquo;your&rdquo;) agree to be bound by these Terms and Conditions (&ldquo;Terms&rdquo;).
             </p>
             <p>
               If you do not agree to all of these Terms, you must immediately discontinue use of the Service. Your continued use of the Platform constitutes acceptance of these Terms and any amendments thereto.
             </p>
             <p>
-              These Terms are a legally binding agreement between you and Kunaya Labs, governed by the laws of India, as further described in Section 13.
+              These Terms are a legally binding agreement between you and Kunaya Lab, governed by the laws of India, as further described in Section 13.
             </p>
           </div>
         </section>
@@ -82,7 +82,7 @@ export default function TermsPage() {
               <strong className="text-ink">3.3</strong> You must be at least 16 years of age to create an account and use the Service. By registering, you represent and warrant that you are at least 16 years old.
             </p>
             <p>
-              <strong className="text-ink">3.4</strong> One user account per individual or organization. Account sharing, resale, or transfer is prohibited without prior written consent from Kunaya Labs.
+              <strong className="text-ink">3.4</strong> One user account per individual or organization. Account sharing, resale, or transfer is prohibited without prior written consent from Kunaya Lab.
             </p>
           </div>
         </section>
@@ -104,13 +104,13 @@ export default function TermsPage() {
               <strong className="text-ink">4.2</strong> All prices are listed in Indian Rupees (₹ INR) and are inclusive of applicable Goods and Services Tax (GST) at 18%.
             </p>
             <p>
-              <strong className="text-ink">4.3</strong> Payments are processed through Cashfree and/or Razorpay payment gateways. Your payment information is handled directly by these PCI-DSS compliant payment processors. Kunaya Labs does not store your credit/debit card details.
+              <strong className="text-ink">4.3</strong> Payments are processed through Cashfree and/or Razorpay payment gateways. Your payment information is handled directly by these PCI-DSS compliant payment processors. Kunaya Lab does not store your credit/debit card details.
             </p>
             <p>
               <strong className="text-ink">4.4</strong> Monthly subscriptions auto-renew at the end of each billing cycle unless cancelled. You may cancel your subscription at any time from your account settings. See our <a href="/refund" className="text-violet-400 hover:text-violet-200 underline underline-offset-4">Refund Policy</a> for details on cancellations and refunds.
             </p>
             <p>
-              <strong className="text-ink">4.5</strong> Kunaya Labs reserves the right to modify pricing with 30 days&apos; advance notice. Existing subscribers will be notified via email before any price changes take effect on their accounts.
+              <strong className="text-ink">4.5</strong> Kunaya Lab reserves the right to modify pricing with 30 days&apos; advance notice. Existing subscribers will be notified via email before any price changes take effect on their accounts.
             </p>
           </div>
         </section>
@@ -176,7 +176,7 @@ export default function TermsPage() {
               <li>(c) Should NEVER be the sole basis for any decision affecting a person&apos;s rights, livelihood, or well-being</li>
             </ul>
             <p>
-              <strong className="text-ink">7.2</strong> Kunaya Labs makes NO WARRANTY regarding the accuracy, completeness, or reliability of AI-generated reports.
+              <strong className="text-ink">7.2</strong> Kunaya Lab makes NO WARRANTY regarding the accuracy, completeness, or reliability of AI-generated reports.
             </p>
             <p>
               <strong className="text-ink">7.3</strong> Report scores are INDICATIVE RANGES, not precise measurements. Scores may vary ±10 points between analyses of the same subject due to the non-deterministic nature of AI models.
@@ -192,7 +192,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">8. DATA HANDLING & PROCESSING</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">8.1</strong> Kunaya Labs processes data as both Data Controller (for user account data) and Data Processor (for analysis subject data) as defined under the Digital Personal Data Protection Act, 2023 (DPDPA).
+              <strong className="text-ink">8.1</strong> Kunaya Lab processes data as both Data Controller (for user account data) and Data Processor (for analysis subject data) as defined under the Digital Personal Data Protection Act, 2023 (DPDPA).
             </p>
             <p>
               <strong className="text-ink">8.2</strong> Data collected and processed includes:
@@ -217,13 +217,13 @@ export default function TermsPage() {
           <h2 className="legal-heading">9. INTELLECTUAL PROPERTY</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">9.1</strong> The Platform, including its multi-agent architecture, prompt engineering methodology, agent personas, psychological framework integrations, ASIX layer, report templates, UI design, and all related intellectual property, are the exclusive property of Kunaya Labs.
+              <strong className="text-ink">9.1</strong> The Platform, including its multi-agent architecture, prompt engineering methodology, agent personas, psychological framework integrations, ASIX layer, report templates, UI design, and all related intellectual property, are the exclusive property of Kunaya Lab.
             </p>
             <p>
-              <strong className="text-ink">9.2</strong> Generated reports belong to the User who commissioned them. Kunaya Labs claims no ownership over the content of individual reports.
+              <strong className="text-ink">9.2</strong> Generated reports belong to the User who commissioned them. Kunaya Lab claims no ownership over the content of individual reports.
             </p>
             <p>
-              <strong className="text-ink">9.3</strong> The Kunaya Labs and PsyProfiler names, logos, and brand elements may NOT be removed from generated reports unless the User has purchased the Classified Partner tier with white-label rights.
+              <strong className="text-ink">9.3</strong> The Kunaya Lab and PsyProfiler names, logos, and brand elements may NOT be removed from generated reports unless the User has purchased the Classified Partner tier with white-label rights.
             </p>
             <p>
               <strong className="text-ink">9.4</strong> Users are granted a limited, non-exclusive, non-transferable license to use the Service and share generated reports for their intended purpose. This license does not extend to the underlying technology, algorithms, or methodology.
@@ -260,7 +260,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">11. INDEMNIFICATION</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">11.1</strong> You agree to indemnify and hold harmless Kunaya Labs, its founder, employees, agents, and affiliates from any claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising from or related to:
+              <strong className="text-ink">11.1</strong> You agree to indemnify and hold harmless Kunaya Lab, its founder, employees, agents, and affiliates from any claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising from or related to:
             </p>
             <ul>
               <li>(a) Your violation of these Terms</li>
@@ -278,7 +278,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">12. TERMINATION</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">12.1</strong> Kunaya Labs may terminate or suspend your account immediately, without prior notice, if you violate these Terms — particularly the Prohibited Uses in Section 6.
+              <strong className="text-ink">12.1</strong> Kunaya Lab may terminate or suspend your account immediately, without prior notice, if you violate these Terms — particularly the Prohibited Uses in Section 6.
             </p>
             <p>
               <strong className="text-ink">12.2</strong> You may terminate your account at any time by contacting support@psyprofiler.io. Termination does not entitle you to a refund except as outlined in our <a href="/refund" className="text-violet-400 hover:text-violet-200 underline underline-offset-4">Refund Policy</a>.
@@ -313,7 +313,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">14. MODIFICATIONS TO TERMS</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">14.1</strong> Kunaya Labs reserves the right to modify these Terms at any time. Material changes will be communicated via email to registered users at least 30 days before they take effect.
+              <strong className="text-ink">14.1</strong> Kunaya Lab reserves the right to modify these Terms at any time. Material changes will be communicated via email to registered users at least 30 days before they take effect.
             </p>
             <p>
               <strong className="text-ink">14.2</strong> Your continued use of the Service after the effective date of modified Terms constitutes acceptance of the updated Terms.
@@ -330,7 +330,7 @@ export default function TermsPage() {
           <div className="legal-body">
             <div className="glass p-6 space-y-3">
               <p className="font-mono text-[10px] tracking-[0.18em] text-gold">KUNAYA LABS — LEGAL DEPARTMENT</p>
-              <p><strong className="text-ink">Business:</strong> Kunaya Labs (MSME Certified)</p>
+              <p><strong className="text-ink">Business:</strong> Kunaya Lab (MSME Certified)</p>
               <p><strong className="text-ink">Address:</strong> Bhandara, Maharashtra 441904, India</p>
               <p><strong className="text-ink">Email:</strong> <a href="mailto:legal@psyprofiler.io" className="text-violet-400 hover:text-violet-200">legal@psyprofiler.io</a></p>
               <p><strong className="text-ink">Support:</strong> <a href="mailto:support@psyprofiler.io" className="text-violet-400 hover:text-violet-200">support@psyprofiler.io</a></p>

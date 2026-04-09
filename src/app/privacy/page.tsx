@@ -37,7 +37,7 @@ export default function PrivacyPage() {
           <h2 className="legal-heading">1. OVERVIEW</h2>
           <div className="legal-body">
             <p>
-              Kunaya Labs (&ldquo;Company&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;), a registered MSME operating PsyProfiler.io (&ldquo;Platform&rdquo;, &ldquo;Service&rdquo;), is committed to protecting your personal data.
+              Kunaya Lab (&ldquo;Company&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;), a registered MSME operating PsyProfiler.io (&ldquo;Platform&rdquo;, &ldquo;Service&rdquo;), is committed to protecting your personal data.
             </p>
             <p>
               This Privacy Policy is issued in compliance with:
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
               <li><strong className="text-violet-200">California Consumer Privacy Act (CCPA)</strong> — for users in California, USA</li>
             </ul>
             <p>
-              Kunaya Labs acts as the <strong className="text-gold">Data Fiduciary</strong> (Data Controller under GDPR terminology) for personal data processed through the Platform.
+              Kunaya Lab acts as the <strong className="text-gold">Data Fiduciary</strong> (Data Controller under GDPR terminology) for personal data processed through the Platform.
             </p>
           </div>
         </section>
@@ -301,7 +301,7 @@ export default function PrivacyPage() {
               <p className="font-mono text-[10px] tracking-[0.18em] text-gold">DESIGNATED GRIEVANCE OFFICER — DPDPA 2023 COMPLIANCE</p>
               <p><strong className="text-ink">Name:</strong> Kunal Shahare</p>
               <p><strong className="text-ink">Designation:</strong> Founder & Grievance Officer</p>
-              <p><strong className="text-ink">Company:</strong> Kunaya Labs</p>
+              <p><strong className="text-ink">Company:</strong> Kunaya Lab</p>
               <p><strong className="text-ink">Email:</strong> <a href="mailto:grievance@psyprofiler.io" className="text-violet-400 hover:text-violet-200">grievance@psyprofiler.io</a></p>
               <p><strong className="text-ink">Address:</strong> Bhandara, Maharashtra 441904, India</p>
               <p className="text-muted text-sm mt-3">

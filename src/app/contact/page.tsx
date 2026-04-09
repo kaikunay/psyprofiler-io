@@ -74,7 +74,7 @@ export default function ContactPage() {
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] text-dim mb-1">REGISTERED ADDRESS</p>
                     <p className="text-ink text-sm leading-relaxed">
-                      Kunaya Labs<br />
+                      Kunaya Lab<br />
                       Bhandara, Maharashtra 441904<br />
                       India
                     </p>
