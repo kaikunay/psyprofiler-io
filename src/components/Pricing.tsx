@@ -4,8 +4,8 @@ import { Check } from "lucide-react";
 
 const tiers = [
   {
-    level: "LEVEL_01",
-    name: "OPERATIVE",
+    level: "ESSENTIAL",
+    name: "PERSONAL",
     price: "₹4,999",
     usd: "$60",
     features: [
@@ -14,13 +14,13 @@ const tiers = [
       "PDF REPORT DELIVERY",
       "EMAIL SUPPORT",
     ],
-    cta: "INITIATE SESSION →",
+    cta: "APPLY FOR ACCESS →",
     ctaStyle: "border border-violet-500 text-violet-200 hover:bg-violet-500/20",
     recommended: false,
   },
   {
-    level: "LEVEL_02",
-    name: "INTELLIGENCE FIRM",
+    level: "PROFESSIONAL",
+    name: "TEAM",
     price: "₹9,999",
     usd: "$120",
     features: [
@@ -29,13 +29,13 @@ const tiers = [
       "API + WEBHOOK INTEGRATION",
       "PRIORITY SUPPORT (24H)",
     ],
-    cta: "ACQUIRE CLEARANCE →",
+    cta: "APPLY FOR ACCESS →",
     ctaStyle: "bg-gold hover:bg-gold-light text-void",
     recommended: true,
   },
   {
-    level: "LEVEL_03",
-    name: "CLASSIFIED PARTNER",
+    level: "ENTERPRISE",
+    name: "ORGANIZATION",
     price: "₹59,999",
     usd: "$720",
     features: [
@@ -44,7 +44,7 @@ const tiers = [
       "DEDICATED ACCOUNT MANAGER",
       "ON-PREMISE AVAILABLE",
     ],
-    cta: "REQUEST BRIEFING →",
+    cta: "CONTACT SALES →",
     ctaStyle: "border border-violet-500 text-violet-200 hover:bg-violet-500/20",
     recommended: false,
   },
@@ -74,11 +74,11 @@ export default function Pricing() {
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse2" />
-            PRICING ARCHITECTURE — AUTHORIZED PERSONNEL
+            EARLY ADOPTER PRICING
           </span>
           <h2 className="font-display font-black text-4xl md:text-5xl text-ink tracking-tight">
             CHOOSE YOUR{" "}
-            <span className="text-gradient-violet">INTELLIGENCE CLEARANCE</span>
+            <span className="text-gradient-violet">PLAN</span>
           </h2>
           <p className="text-muted max-w-lg">
             One report changes a hiring decision.<br />
@@ -133,7 +133,7 @@ export default function Pricing() {
                 ))}
               </ul>
               <button onClick={openAuthModal} className={`block text-center w-full font-display font-bold text-sm py-3 tracking-wide transition-colors ${tier.ctaStyle}`}>
-                INITIALIZE FOR THIS LEVEL →
+                APPLY FOR EARLY ACCESS →
               </button>
             </motion.div>
           ))}
@@ -154,7 +154,7 @@ export default function Pricing() {
             <span className="text-muted text-sm font-normal ml-2">($9 USD)</span>
           </p>
           <button onClick={openAuthModal} className="inline-block border border-violet-500/40 text-violet-200 font-mono text-xs tracking-widest px-6 py-2 hover:bg-violet-500/10 transition-colors">
-            INITIALIZE AD-HOC SECURE ACCESS →
+            GET A SINGLE REPORT →
           </button>
         </motion.div>
 

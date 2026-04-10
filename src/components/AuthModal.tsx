@@ -88,19 +88,19 @@ export default function AuthModal() {
 
           <div className="text-center mb-8">
             <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-300 mb-4">
-              SECURE CLEARANCE REQUIRED
+              JOIN THE EXCLUSIVE WAITLIST
             </span>
             <h2 className="font-display font-bold text-2xl mt-4 text-ink">
-              {view === "magic" && "PASSWORDLESS LOGIN"}
-              {view === "login" && "USER AUTHENTICATION"}
-              {view === "signup" && "INITIALIZE PROFILE"}
+              {view === "magic" && "EARLY ACCESS LOGIN"}
+              {view === "login" && "MEMBER ACCESS"}
+              {view === "signup" && "APPLY FOR WAITLIST"}
             </h2>
           </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-4">
             <div>
               <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">
-                Secure Email
+                Email Address
               </label>
               <input
                 type="email"
@@ -108,7 +108,7 @@ export default function AuthModal() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-void border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 placeholder:text-dim focus:outline-none focus:border-violet-400 transition-colors"
-                placeholder="operative@domain.com"
+                placeholder="hello@domain.com"
               />
             </div>
 
@@ -118,7 +118,7 @@ export default function AuthModal() {
                 animate={{ opacity: 1, height: "auto" }}
               >
                 <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase mt-4">
-                  Passphrase
+                  Password
                 </label>
                 <input
                   type="password"
@@ -146,9 +146,9 @@ export default function AuthModal() {
               disabled={status === "loading" || status === "success"}
               className="w-full bg-violet-600 hover:bg-violet-500 text-white font-display font-bold py-3 mt-4 transition-colors disabled:opacity-50"
             >
-              {status === "loading" ? "DECRYPTING..." : 
-               view === "magic" ? "SEND MAGIC LINK" :
-               view === "signup" ? "INITIALIZE ACCOUNT" : "AUTHENTICATE"}
+              {status === "loading" ? "PROCESSING..." : 
+               view === "magic" ? "SEND ACCESS LINK" :
+               view === "signup" ? "JOIN WAITLIST" : "LOG IN"}
             </button>
           </form>
 
@@ -169,7 +169,7 @@ export default function AuthModal() {
 
           <div className="mt-4 flex flex-col gap-2 font-mono text-[10px] tracking-wider text-muted text-center pt-2">
             <button onClick={() => setView("magic")} className={`hover:text-gold transition-colors ${view === 'magic' && 'text-gold'}`}>USE MAGIC LINK</button>
-            <button onClick={() => setView("login")} className={`hover:text-gold transition-colors ${view === 'login' && 'text-gold'}`}>USE PASSPHRASE</button>
+            <button onClick={() => setView("login")} className={`hover:text-gold transition-colors ${view === 'login' && 'text-gold'}`}>USE PASSWORD</button>
             {view === "login" && (
               <button onClick={() => setView("signup")} className="hover:text-gold transition-colors text-violet-400">CREATE PROFILE INSTEAD</button>
             )}

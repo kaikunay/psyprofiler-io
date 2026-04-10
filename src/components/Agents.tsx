@@ -2,13 +2,15 @@
 import { motion } from "framer-motion";
 
 const agents = [
-  { id: "AGENT_01", name: "PHANTOM", desc: "Primary data collection across all platforms. Maps every digital footprint." },
-  { id: "AGENT_02", name: "SCOUT",   desc: "Cross-references identities across LinkedIn, Twitter, Instagram, Reddit simultaneously." },
-  { id: "AGENT_03", name: "WEAVER",  desc: "Connects disparate digital identities into a single unified psychographic profile." },
-  { id: "AGENT_04", name: "HERALD",  desc: "Deep behavioral pattern analysis. OCEAN scoring and linguistic fingerprinting." },
-  { id: "AGENT_05", name: "FORGE",   desc: "Dark Triad and Schwartz Values framework mapping. Identifies hidden motivations." },
-  { id: "AGENT_06", name: "LEDGER",  desc: "Synthesis engine. Produces confidence scores and reconciles conflicting signals." },
-  { id: "AGENT_07", name: "AEGIS",   desc: "Quality control and security. Validates all outputs before report delivery." },
+  { id: "NODE_01", name: "PULSE DISCOVERY", desc: "Scans the open web for scattered digital fragments, mapping the initial footprint." },
+  { id: "NODE_02", name: "IDENTITY RESOLUTION", desc: "Cross-references disparate accounts to verify true identity and eliminate noise." },
+  { id: "NODE_03", name: "CONTEXT MAPPING", desc: "Places isolated digital actions into their proper situational and temporal context." },
+  { id: "NODE_04", name: "LINGUISTIC DECODING", desc: "Analyzes vocabulary and syntax to reveal unspoken cognitive baselines." },
+  { id: "NODE_05", name: "BEHAVIORAL EXTRAPOLATION", desc: "Translates historical online actions into highly predictable behavioral models." },
+  { id: "NODE_06", name: "MOTIVE EXTRACTION", desc: "Uncovers the hidden personal and professional incentives driving their decisions." },
+  { id: "NODE_07", name: "RISK CALIBRATION", desc: "Flags inconsistencies, potential volatility, or hidden behavioral blind spots." },
+  { id: "NODE_08", name: "INSIGHT SYNTHESIS", desc: "Weaves fragmented data points into a single cohesive psychological portrait." },
+  { id: "NODE_09", name: "CONFIDENCE SCORING", desc: "Assigns a strict statistical reliability metric to every generated insight." },
 ];
 
 export default function Agents() {
@@ -24,16 +26,16 @@ export default function Agents() {
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse2" />
-            SYSTEM ARCHITECTURE — CLASSIFIED
+            OUR TECHNOLOGY ENGINE
           </span>
           <h2 className="font-display font-black text-4xl md:text-6xl text-ink tracking-tight">
-            7 AGENTS.<br />
-            <span className="text-gradient-violet">ONE TRUTH.</span>
+            POWERED BY<br />
+            <span className="text-gradient-violet">ADVANCED AI.</span>
           </h2>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-success animate-pulse2" />
             <span className="font-mono text-[11px] tracking-[0.18em] text-success">
-              STATUS: SYSTEM_WIDE_SCAN_ACTIVE
+              STATUS: ENGINE OPTIMIZING
             </span>
           </div>
         </motion.div>

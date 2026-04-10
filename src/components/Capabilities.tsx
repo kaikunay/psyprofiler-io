@@ -3,9 +3,9 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef, MouseEvent } from "react";
 
 const modules = [
-  { id: "MODULE_01", title: "BEHAVIORAL SIGNATURE",       icon: "◈", desc: "Detecting deep-layer psychological patterns across decentralized networks. We identify the 'who' before they even speak." },
-  { id: "MODULE_02", title: "DARK TRIAD MAPPING",         icon: "◬", desc: "Advanced risk assessment of manipulative entities. Isolate malicious intent in market movements and social engineering." },
-  { id: "MODULE_03", title: "CROSS-PLATFORM INTELLIGENCE",icon: "⬡", desc: "Unified intelligence gathering from high-noise environments. Data refined into actionable psychological profiles." },
+  { id: "FEATURE_01", title: "PERSONALITY INSIGHTS",       icon: "◈", desc: "Understand core behaviors and communication preferences to build stronger relationships faster." },
+  { id: "FEATURE_02", title: "RISK ASSESSMENT",            icon: "◬", desc: "Identify potential red flags or hidden behavioral risks before making critical decisions." },
+  { id: "FEATURE_03", title: "UNIFIED PROFILES",           icon: "⬡", desc: "Get a clear, synthesized view of a person from their scattered digital footprint across the web." },
 ];
 
 function TiltCard({ children }: { children: React.ReactNode }) {
@@ -47,11 +47,11 @@ export default function Capabilities() {
         >
           <span className="badge bg-violet-500/10 border border-violet-500/30 text-violet-200">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse2" />
-            CAPABILITY OVERVIEW — RESTRICTED
+            SYSTEM CAPABILITIES — SNEAK PEEK
           </span>
           <h2 className="font-display font-black text-4xl md:text-5xl text-ink tracking-tight max-w-2xl">
-            YOU ALREADY FEEL IT.{" "}
-            <span className="text-gradient-violet">NOW YOU CAN PROVE IT.</span>
+            SEE BEYOND{" "}
+            <span className="text-gradient-violet">THE SURFACE.</span>
           </h2>
           <p className="text-muted max-w-xl leading-relaxed">
             The invisible patterns of human behavior are now visible. Every digital shadow,

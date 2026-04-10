@@ -5,10 +5,10 @@ import AuroraBeams from "@/components/effects/AuroraBeams";
 import { useAuth } from "@/context/AuthContext";
 
 const TERMINAL_LINES = [
-  "> DECRYPTING NEURAL PATHWAY 7... SUCCESS",
-  "> CORRELATING CROSS-PLATFORM HANDLES... 14 FOUND",
-  "> MAPPING LINGUISTIC FINGERPRINT... MATCH CONFIRMED",
-  "> INITIATING PSY-PROFILE SYNTHESIS...",
+  "> GATHERING PUBLIC DIGITAL TRACES...",
+  "> ANALYZING CROSS-PLATFORM FOOTPRINTS...",
+  "> SYNTHESIZING BEHAVIORAL PROFILE...",
+  "> GENERATING DEEP PSYCHOLOGICAL INSIGHTS...",
 ];
 
 function TerminalPanel() {
@@ -47,9 +47,9 @@ function TerminalPanel() {
     >
       <div className="flex items-center justify-between border-b border-violet-500/20 pb-3">
         <span className="font-mono text-[10px] tracking-[0.18em] text-gold uppercase">
-          ACTIVE ANALYSIS — SUBJECT: [REDACTED]
+          PROFILE ANALYSIS PREVIEW
         </span>
-        <span className="font-mono text-[10px] text-dim">ID: 9X-214-5</span>
+        <span className="font-mono text-[10px] text-dim">ID: DEMO-001</span>
       </div>
 
       <div className="space-y-3">
@@ -74,7 +74,7 @@ function TerminalPanel() {
       <div className="flex items-center gap-2 pt-1">
         <span className="w-2 h-2 rounded-full bg-success animate-pulse2" />
         <span className="font-mono text-[10px] text-success tracking-widest">
-          REPORT STATUS: READY_FOR_DELIVERY
+          STATUS: PREPARING INSIGHTS...
         </span>
       </div>
 
@@ -113,7 +113,7 @@ export default function Hero() {
           >
             <span className="badge bg-gold/10 border border-gold/30 text-gold">
               <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse2" />
-              ACCESS LEVEL — OMEGA
+              EARLY ACCESS — INVITATION ONLY
             </span>
           </motion.div>
 
@@ -124,9 +124,9 @@ export default function Hero() {
           >
             <h1 className="font-display font-black leading-[0.92] tracking-[-0.03em] glow-text-violet"
                 style={{ fontSize: "clamp(42px, 6.5vw, 92px)" }}>
-              <span className="block text-ink">PEOPLE ARE BEAUTIFUL</span>
-              <span className="block text-ink">MYSTERIES. WE JUST HOLD</span>
-              <span className="block text-gradient-violet">THE ANSWER KEY.</span>
+              <span className="block text-ink">KNOW WHO YOU'RE</span>
+              <span className="block text-ink">DEALING WITH</span>
+              <span className="block text-gradient-violet">BEFORE THEY SPEAK.</span>
             </h1>
           </motion.div>
 
@@ -136,7 +136,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.5 }}
             className="font-display font-semibold text-xl md:text-2xl text-violet-200 tracking-tight"
           >
-            SKIP THE SMALL TALK.
+            UNDERSTAND THE MIND BEHIND THE DIGITAL FOOTPRINT.
           </motion.p>
 
           <motion.p
@@ -156,7 +156,7 @@ export default function Hero() {
               href="/dashboard"
               className="inline-block text-center w-full max-w-sm bg-gold hover:bg-gold-light text-void font-display font-bold text-sm px-6 py-4 transition-colors"
             >
-              ACCESS COMMAND CENTER
+              ACCESS DASHBOARD
             </motion.a>
           ) : (
             <motion.button
@@ -166,7 +166,7 @@ export default function Hero() {
               onClick={openAuthModal}
               className="w-full max-w-sm bg-violet-600 hover:bg-violet-500 text-white font-display font-bold text-sm px-6 py-4 transition-colors shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] flex items-center justify-center gap-3"
             >
-              INITIALIZE SECURE ACCESS
+              APPLY FOR EARLY ACCESS
             </motion.button>
           )}
 
@@ -176,7 +176,7 @@ export default function Hero() {
             transition={{ delay: 1.1 }}
             className="font-mono text-[11px] tracking-[0.15em] text-dim"
           >
-            1,247 CLEARED FOR ACCESS
+            JOIN 1,247 LEADERS ON THE WAITLIST
           </motion.p>
 
           <motion.p
@@ -185,8 +185,8 @@ export default function Hero() {
             transition={{ delay: 1.3 }}
             className="text-muted text-sm leading-relaxed"
           >
-            The ultimate human "cheat code" for founders, recruiters,<br />
-            and curious minds who want to truly understand someone<br />
+            The ultimate insight tool for founders, recruiters,<br />
+            and decision-makers who want to truly understand someone<br />
             before taking the leap.
           </motion.p>
         </div>

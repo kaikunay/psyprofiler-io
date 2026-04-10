@@ -36,13 +36,17 @@ export default function Navbar() {
 
         {/* Nav Links */}
         <div className="hidden md:flex items-center gap-8">
-          {["INTEL", "AGENTS", "PRICING"].map((link) => (
+          {[
+            { label: "HOW IT WORKS", id: "intel" },
+            { label: "TECHNOLOGY", id: "agents" },
+            { label: "PRICING", id: "pricing" }
+          ].map((link) => (
             <a
-              key={link}
-              href={`#${link.toLowerCase()}`}
+              key={link.id}
+              href={`#${link.id}`}
               className="font-mono text-xs tracking-[0.15em] text-muted hover:text-ink transition-colors duration-200"
             >
-              {link}
+              {link.label}
             </a>
           ))}
           {user && (
@@ -60,7 +64,7 @@ export default function Navbar() {
           {user ? (
             <>
               <span className="hidden md:block font-mono text-[10px] tracking-[0.18em] text-success uppercase">
-                CLEARANCE: {user.email?.split('@')[0] || "OMEGA"}
+                STATUS: MEMBER
               </span>
               <button
                 onClick={logout}
@@ -72,7 +76,7 @@ export default function Navbar() {
           ) : (
             <>
               <span className="hidden md:block font-mono text-[10px] tracking-[0.18em] text-dim uppercase">
-                CLEARANCE: PUBLIC
+                STATUS: WAITLIST
               </span>
               <button
                 onClick={openAuthModal}
@@ -80,7 +84,7 @@ export default function Navbar() {
                 title="Initialize connection"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse2" />
-                INITIATE
+                JOIN WAITLIST
               </button>
             </>
           )}
