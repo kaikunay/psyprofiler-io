@@ -236,13 +236,13 @@ export default function TermsPage() {
           <h2 className="legal-heading">10. LIMITATION OF LIABILITY</h2>
           <div className="legal-body">
             <p>
-              <strong className="text-ink">10.1</strong> TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, INCLUDING THE INDIAN CONTRACT ACT, 1872, KUNAYA LABS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM THE USE OF THE SERVICE.
+              <strong className="text-ink">10.1</strong> TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, INCLUDING THE INDIAN CONTRACT ACT, 1872, KUNAYA LAB SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM THE USE OF THE SERVICE.
             </p>
             <p>
-              <strong className="text-ink">10.2</strong> KUNAYA LABS&apos; TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY THE USER TO KUNAYA LABS IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.
+              <strong className="text-ink">10.2</strong> KUNAYA LAB&apos;S TOTAL AGGREGATE LIABILITY FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY THE USER TO KUNAYA LAB IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.
             </p>
             <p>
-              <strong className="text-ink">10.3</strong> KUNAYA LABS IS NOT LIABLE FOR:
+              <strong className="text-ink">10.3</strong> KUNAYA LAB IS NOT LIABLE FOR:
             </p>
             <ul>
               <li>(a) Decisions made based on AI-generated reports</li>
@@ -329,7 +329,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">15. CONTACT INFORMATION</h2>
           <div className="legal-body">
             <div className="glass p-6 space-y-3">
-              <p className="font-mono text-[10px] tracking-[0.18em] text-gold">KUNAYA LABS — LEGAL DEPARTMENT</p>
+              <p className="font-mono text-[10px] tracking-[0.18em] text-gold">KUNAYA LAB — LEGAL DEPARTMENT</p>
               <p><strong className="text-ink">Business:</strong> Kunaya Lab (MSME Certified)</p>
               <p><strong className="text-ink">Address:</strong> Bhandara, Maharashtra 441904, India</p>
               <p><strong className="text-ink">Email:</strong> <a href="mailto:legal@psyprofiler.io" className="text-violet-400 hover:text-violet-200">legal@psyprofiler.io</a></p>

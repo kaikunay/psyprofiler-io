@@ -1,4 +1,4 @@
-import { Client, Databases, Account, ID } from 'appwrite';
+import { Client, Databases, Account, Storage, ID } from 'appwrite';
 
 const client = new Client();
 
@@ -9,9 +9,7 @@ client
     .setEndpoint(endpoint)
     .setProject(projectId);
 
-// Debug: Log to see if variables are being loaded securely (don't log full secrets, just existence)
-console.log(`[Appwrite Init] Endpoint: ${endpoint}, ProjectID length: ${projectId.length}`);
-
 export const databases = new Databases(client);
 export const account = new Account(client);
-export { ID };
+export const storage = new Storage(client);
+export { client, ID };

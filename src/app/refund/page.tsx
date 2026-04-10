@@ -257,7 +257,7 @@ export default function RefundPage() {
           <h2 className="legal-heading">10. CONTACT INFORMATION</h2>
           <div className="legal-body">
             <div className="glass p-6 space-y-3">
-              <p className="font-mono text-[10px] tracking-[0.18em] text-gold">KUNAYA LABS — BILLING & SUPPORT</p>
+              <p className="font-mono text-[10px] tracking-[0.18em] text-gold">KUNAYA LAB — BILLING & SUPPORT</p>
               <p><strong className="text-ink">Refund Requests:</strong> <a href="mailto:support@psyprofiler.io" className="text-violet-400 hover:text-violet-200">support@psyprofiler.io</a></p>
               <p><strong className="text-ink">Billing Inquiries:</strong> <a href="mailto:billing@psyprofiler.io" className="text-violet-400 hover:text-violet-200">billing@psyprofiler.io</a></p>
               <p><strong className="text-ink">Escalation:</strong> <a href="mailto:grievance@psyprofiler.io" className="text-violet-400 hover:text-violet-200">grievance@psyprofiler.io</a></p>

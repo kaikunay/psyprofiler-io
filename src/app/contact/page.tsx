@@ -62,7 +62,7 @@ export default function ContactPage() {
             <div className="glass p-6 space-y-6">
               <h2 className="font-display font-bold text-xl text-ink tracking-tight flex items-center gap-3">
                 <Building2 size={20} className="text-violet-400" />
-                KUNAYA LABS
+                KUNAYA LAB
               </h2>
               <p className="font-mono text-[10px] tracking-[0.15em] text-gold">
                 MSME CERTIFIED ENTERPRISE — GOVERNMENT OF INDIA
@@ -274,7 +274,7 @@ export default function ContactPage() {
                 <span className="font-display font-bold text-lg tracking-tight text-ink">PSYPROFILER</span>
               </div>
               <p className="font-mono text-[10px] tracking-[0.15em] text-dim leading-relaxed">
-                AI-POWERED PSYCHOLOGICAL<br />INTELLIGENCE PLATFORM<br />BY KUNAYA LABS
+                AI-POWERED PSYCHOLOGICAL<br />INTELLIGENCE PLATFORM<br />BY KUNAYA LAB
               </p>
             </div>
             <div className="space-y-3">
@@ -302,7 +302,7 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="border-t border-violet-500/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <span className="font-mono text-[11px] tracking-[0.15em] text-dim">© 2026 KUNAYA LABS — ALL RIGHTS RESERVED</span>
+            <span className="font-mono text-[11px] tracking-[0.15em] text-dim">© 2026 KUNAYA LAB — ALL RIGHTS RESERVED</span>
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse2" />
               <span className="font-mono text-[10px] tracking-[0.18em] text-success">SECURE_CHANNEL_ACTIVE</span>

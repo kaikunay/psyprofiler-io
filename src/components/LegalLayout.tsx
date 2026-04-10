@@ -147,7 +147,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, toc, childre
               <p className="font-mono text-[10px] tracking-[0.15em] text-dim leading-relaxed">
                 AI-POWERED PSYCHOLOGICAL<br />
                 INTELLIGENCE PLATFORM<br />
-                BY KUNAYA LABS
+                BY KUNAYA LAB
               </p>
               <p className="font-mono text-[10px] tracking-[0.12em] text-dim">
                 MSME CERTIFIED // BHANDARA, MH, INDIA
@@ -187,7 +187,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, toc, childre
 
           <div className="border-t border-violet-500/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <span className="font-mono text-[11px] tracking-[0.15em] text-dim">
-              © 2026 KUNAYA LABS — ALL RIGHTS RESERVED
+              © 2026 KUNAYA LAB — ALL RIGHTS RESERVED
             </span>
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse2" />
