@@ -17,7 +17,7 @@ import { MAKISE_SYSTEM_PROMPT } from './prompts/ocean';
 import { MERUEM_SYSTEM_PROMPT } from './prompts/darkTriad';
 import { HANGE_SYSTEM_PROMPT } from './prompts/attachment';
 import { REINHARD_SYSTEM_PROMPT } from './prompts/motivation';
-import { YOGI_SYSTEM_PROMPT } from './prompts/asix';
+import { ORACLE_SYSTEM_PROMPT } from './prompts/asix';
 
 import type {
   NormalizedData,
@@ -148,7 +148,7 @@ async function runYogi(dataPrompt: string): Promise<ASIXProfile> {
   console.log('[PROFILER] 🕉️ YOGI (ASIX) analyzing...');
   return generateStructuredJSON<ASIXProfile>(
     dataPrompt,
-    YOGI_SYSTEM_PROMPT,
+    ORACLE_SYSTEM_PROMPT,
     MODELS.PRO,
     0.25,
   );

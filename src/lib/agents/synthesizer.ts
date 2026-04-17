@@ -8,7 +8,7 @@
  */
 
 import { generateStructuredJSON, MODELS } from '@/lib/gemini';
-import { NO GAME_SYSTEM_PROMPT } from './prompts/synthesizer';
+import { NO_GAME_SYSTEM_PROMPT } from './prompts/synthesizer';
 import type {
   AnalysisResult,
   ProfileReport,
@@ -110,7 +110,7 @@ export async function synthesizeReport(
 
   const synthesis = await generateStructuredJSON<SynthesisOutput>(
     briefing,
-    NO GAME_SYSTEM_PROMPT,
+    NO_GAME_SYSTEM_PROMPT,
     MODELS.PRO,
     0.4,
   );
