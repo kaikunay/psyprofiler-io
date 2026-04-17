@@ -98,7 +98,7 @@ export async function executeFullPipeline(
        });
        
        if (imageResponse.generatedImages && imageResponse.generatedImages.length > 0) {
-          report.soulSculptureBase64 = imageResponse.generatedImages[0].image.imageBytes;
+          report.soulSculptureBase64 = imageResponse.generatedImages![0].image!.imageBytes;
           console.log('[LELOUCH] ✅ Soul Sculpture forged successfully.');
        }
     } catch (imgError: any) {
