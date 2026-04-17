@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       {
         source: '/sherlock/:path*',
         destination: 'http://40.81.230.135/sherlock/:path*', // Azure VM IP
+      },
+      {
+        source: '/api/:path*',
+        destination: 'http://40.81.230.135/api/:path*', // Azure VM API Handler (NO TIMEOUT)
       }
     ];
   },

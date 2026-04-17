@@ -60,6 +60,21 @@ export default function Dashboard() {
     }
   }, [user]);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    const hasActiveProfiles = profiles.some(p => ['queued', 'intake', 'analyzing', 'synthesizing'].includes(p.status));
+    
+    if (hasActiveProfiles) {
+      interval = setInterval(() => {
+        fetchProfiles();
+      }, 5000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [profiles]);
+
   const fetchCredits = useCallback(async () => {
     if (!user) return;
     try {

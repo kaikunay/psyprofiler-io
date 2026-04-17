@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Users } from 'node-appwrite';
 import { executeFullPipeline } from '@/lib/agents/orchestrator';
 import { deductCredits } from '@/lib/credits';
 import type { AnalyzeRequest, AnalyzeResponse, TargetInput } from '@/lib/agents/types';
@@ -117,6 +117,43 @@ export async function POST(request: NextRequest) {
             completedAt: new Date().toISOString(),
           });
           console.log(`[API] ✅ Report stored for profile ${profileId}`);
+
+          // --- N8N WEBHOOK TRIGGER ---
+          try {
+            const client = new Client()
+              .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
+              .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
+            const apiKey = process.env.APPWRITE_SERVER_API_KEY || process.env.APPWRITE_API_KEY;
+            if (apiKey) client.setKey(apiKey);
+            
+            const users = new Users(client);
+            let targetEmail = '';
+            
+            if (userId && userId !== 'dev-user') {
+              const userAcct = await users.get(userId);
+              targetEmail = userAcct.email;
+            }
+
+            const webhookUrl = process.env.N8N_URL;
+            if (webhookUrl && targetEmail) {
+               console.log(`[API] Triggering n8n webhook for ${profileId}...`);
+               await fetch(webhookUrl, {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({
+                   profileId,
+                   targetName,
+                   targetEmail,
+                   renderTargetUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/render/${profileId}`
+                 })
+               });
+               console.log(`[API] ✅ n8n webhook triggered`);
+            } else {
+               console.warn(`[API] Skipped n8n webhook. URL config: ${!!webhookUrl}, User Email: ${!!targetEmail}`);
+            }
+          } catch(webhookErr) {
+             console.error('[API] Failed to trigger N8N webhook:', webhookErr);
+          }
         } catch (err) {
           console.error('[API] Failed to store report:', err);
         }
