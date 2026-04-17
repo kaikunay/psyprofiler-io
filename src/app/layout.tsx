@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({ subsets:["latin"], variable:"--font-display", weight:["400","600","700"] });
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthModal />
           {children}
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
