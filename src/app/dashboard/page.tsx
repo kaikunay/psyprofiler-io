@@ -2,19 +2,35 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { databases, ID } from "@/lib/appwrite";
 import { Permission, Role, Query } from "appwrite";
+import PurchaseModal from "@/components/PurchaseModal";
+
+import type { ReportType, AnalysisDepth, AnalysisStatus } from '@/lib/agents/types';
 
 interface ProfileDocument {
   $id: string;
   targetName: string;
-  status: string;
+  status: AnalysisStatus;
   documentId?: string;
   fileId?: string;
   $createdAt: string;
 }
+
+const REPORT_TYPES: { value: ReportType; label: string; icon: string; description: string }[] = [
+  { value: 'hiring', label: 'Hiring Intel', icon: '🏢', description: 'Evaluate candidates before hiring' },
+  { value: 'sales', label: 'Sales Intel', icon: '💼', description: 'Understand prospects for sales approach' },
+  { value: 'dating', label: 'Dating Intel', icon: '💝', description: 'Compatibility and personality insights' },
+  { value: 'self-discovery', label: 'Self-Discovery', icon: '🔮', description: 'Deep self-awareness profile' },
+];
+
+const DEPTH_TIERS: { value: AnalysisDepth; label: string; credits: number; description: string }[] = [
+  { value: 'scout', label: 'Scout', credits: 1, description: 'Surface scan — quick overview' },
+  { value: 'investigator', label: 'Investigator', credits: 3, description: 'Deep multi-platform analysis' },
+  { value: 'oracle', label: 'Oracle', credits: 5, description: 'Maximum depth + Vedic profiling' },
+];
 
 export default function Dashboard() {
   const { user, isLoading, logout } = useAuth();
@@ -23,8 +39,13 @@ export default function Dashboard() {
   const [profiles, setProfiles] = useState<ProfileDocument[]>([]);
   const [dbLoading, setDbLoading] = useState(true);
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  const [isPurchaseOpen, setIsPurchaseOpen] = useState(false);
   const [targetName, setTargetName] = useState("");
+  const [targetUrl, setTargetUrl] = useState("");
+  const [reportType, setReportType] = useState<ReportType>('hiring');
+  const [analysisDepth, setAnalysisDepth] = useState<AnalysisDepth>('scout');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -35,6 +56,25 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       fetchProfiles();
+      fetchCredits();
+    }
+  }, [user]);
+
+  const fetchCredits = useCallback(async () => {
+    if (!user) return;
+    try {
+      const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
+      const docs = await databases.listDocuments(dbId, 'user_credits', [
+        Query.equal('userId', user.$id),
+        Query.limit(1),
+      ]);
+      if (docs.documents.length > 0) {
+        setCredits(docs.documents[0].credits ?? 0);
+      } else {
+        setCredits(3); // New users get 3 free
+      }
+    } catch {
+      setCredits(3); // Default fallback
     }
   }, [user]);
 
@@ -53,13 +93,23 @@ export default function Dashboard() {
     }
   };
 
+  const selectedDepthTier = DEPTH_TIERS.find(d => d.value === analysisDepth)!;
+
   const requestNewProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!targetName || !user) return;
+
+    // Check credits
+    if (credits !== null && credits < selectedDepthTier.credits) {
+      setIsScanModalOpen(false);
+      setIsPurchaseOpen(true);
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      await databases.createDocument(
+      const doc = await databases.createDocument(
         process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles',
         ID.unique(),
@@ -69,14 +119,28 @@ export default function Dashboard() {
           status: 'queued'
         },
         [
-          // Document-Level Security: Only the user who created it can read it
           Permission.read(Role.user(user.$id))
         ]
       );
+
+      // Trigger the intelligence pipeline
+      fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profileId: doc.$id,
+          targetName,
+          targetUrl: targetUrl || undefined,
+          reportType,
+          analysisDepth,
+        }),
+      }).catch(err => console.error('Pipeline trigger failed:', err));
       
       setTargetName("");
+      setTargetUrl("");
       setIsScanModalOpen(false);
-      fetchProfiles(); // Refresh the list
+      fetchProfiles();
+      fetchCredits(); // Refresh credits after scan
     } catch (error) {
       console.error("Failed to queue profile:", error);
       alert("Failed to queue intelligence report. Check console.");
@@ -129,12 +193,21 @@ export default function Dashboard() {
 
           {/* Credits Widget */}
           <div className="glass p-6 border-l-2 border-l-gold relative overflow-hidden">
-            <h3 className="font-mono text-[10px] tracking-widest text-dim mb-4">INTELLIGENCE ASSETS</h3>
+            <h3 className="font-mono text-[10px] tracking-widest text-dim mb-4">INTELLIGENCE CREDITS</h3>
             <div className="space-y-1 relative z-10">
-              <p className="font-display font-black text-4xl text-gold glow-text-gold">10</p>
-              <p className="font-mono text-[10px] text-muted tracking-widest">AVAILABLE SCANS (EDUCATION PLAN)</p>
+              <p className="font-display font-black text-4xl text-gold glow-text-gold">
+                {credits !== null ? credits : '—'}
+              </p>
+              <p className="font-mono text-[10px] text-muted tracking-widest">
+                {credits !== null && credits > 0
+                  ? `${Math.floor(credits / 5)} ORACLE · ${Math.floor(credits / 3)} INVESTIGATOR · ${credits} SCOUT`
+                  : 'NO CREDITS — ACQUIRE TO SCAN'}
+              </p>
             </div>
-            <button className="mt-6 w-full px-4 py-2 bg-gold/10 hover:bg-gold/20 text-gold border border-gold/30 font-mono text-[10px] tracking-widest transition-colors relative z-10">
+            <button 
+              onClick={() => setIsPurchaseOpen(true)}
+              className="mt-6 w-full px-4 py-2 bg-gold/10 hover:bg-gold/20 text-gold border border-gold/30 font-mono text-[10px] tracking-widest transition-colors relative z-10 cursor-pointer"
+            >
               ACQUIRE MORE CREDITS
             </button>
             <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-gold/5 rounded-full blur-2xl" />
@@ -151,7 +224,7 @@ export default function Dashboard() {
               </svg>
             </div>
             <h3 className="font-display font-bold text-lg text-ink">QUEUE NEW TARGET</h3>
-            <p className="font-mono text-[10px] text-muted tracking-widest mt-2 uppercase">1 CREDIT DEDUCTION</p>
+            <p className="font-mono text-[10px] text-muted tracking-widest mt-2 uppercase">2-YEAR INTELLIGENCE SWEEP</p>
           </div>
         </div>
 
@@ -177,14 +250,15 @@ export default function Dashboard() {
                   
                   <div className="flex items-center gap-3">
                     {p.status === 'queued' && <span className="font-mono text-[10px] tracking-widest text-gold animate-pulse">QUEUED</span>}
-                    {p.status === 'processing' && <span className="font-mono text-[10px] tracking-widest text-violet-400 animate-pulse">SYNTHESIZING...</span>}
+                    {(p.status === 'intake' || p.status === 'analyzing' || p.status === 'synthesizing') && <span className="font-mono text-[10px] tracking-widest text-violet-400 animate-pulse">ANALYZING...</span>}
                     {p.status === 'completed' && <span className="font-mono text-[10px] tracking-widest text-success">COMPLETED</span>}
+                    {p.status === 'failed' && <span className="font-mono text-[10px] tracking-widest text-red-400">FAILED</span>}
                     
                     <button 
-                      disabled={p.status !== 'completed'} 
-                      className="px-4 py-2 border border-white/10 text-[10px] font-mono tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-violet-500/20 transition-colors"
+                      onClick={() => router.push(`/dashboard/profile/${p.$id}`)}
+                      className="px-4 py-2 border border-white/10 text-[10px] font-mono tracking-widest hover:bg-violet-500/20 transition-colors"
                     >
-                      DOWNLOAD
+                      {p.status === 'completed' ? 'VIEW REPORT' : 'VIEW STATUS'}
                     </button>
                   </div>
                 </div>
@@ -194,7 +268,7 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* New Scan Modal */}
+      {/* ── Scan Modal ──────────────────────────────────────── */}
       <AnimatePresence>
         {isScanModalOpen && (
           <motion.div
@@ -207,22 +281,76 @@ export default function Dashboard() {
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md bg-surface border border-violet-500/30 p-8 glass"
+              className="w-full max-w-lg bg-surface border border-violet-500/30 p-8 glass"
             >
               <h2 className="font-display font-bold text-2xl text-ink mb-2">TARGET ACQUISITION</h2>
-              <p className="font-mono text-[10px] tracking-widest text-dim mb-6">INPUT PUBLIC IDENTIFIER FOR AI RECONNAISSANCE.</p>
+              <p className="font-mono text-[10px] tracking-widest text-dim mb-6">INPUT PUBLIC IDENTIFIER FOR AI RECONNAISSANCE. 2-YEAR DATA SWEEP.</p>
               
               <form onSubmit={requestNewProfile} className="space-y-4">
                 <div>
-                  <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">Target Identity (Social Handle, Name, DB ID)</label>
+                  <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">Target Name</label>
                   <input
                     type="text"
                     value={targetName}
                     onChange={(e) => setTargetName(e.target.value)}
                     required
                     className="w-full bg-void border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 focus:outline-none focus:border-violet-400 transition-colors focus:shadow-[0_0_15px_rgba(139,92,246,0.15)]"
-                    placeholder="@target_profile"
+                    placeholder="Full name or @handle"
                   />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">Profile URL (Optional)</label>
+                  <input
+                    type="url"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    className="w-full bg-void border border-violet-500/30 text-ink font-mono text-sm px-4 py-3 focus:outline-none focus:border-violet-400 transition-colors focus:shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                    placeholder="https://linkedin.com/in/..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">Report Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {REPORT_TYPES.map(rt => (
+                      <button
+                        key={rt.value}
+                        type="button"
+                        onClick={() => setReportType(rt.value)}
+                        className={`px-3 py-2.5 border font-mono text-[10px] tracking-widest transition-all ${
+                          reportType === rt.value
+                            ? 'border-violet-400 bg-violet-500/15 text-violet-300'
+                            : 'border-white/10 text-muted hover:bg-white/5'
+                        }`}
+                      >
+                        {rt.icon} {rt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Analysis Depth Selector */}
+                <div>
+                  <label className="block font-mono text-[10px] text-muted tracking-widest mb-1.5 uppercase">Analysis Depth</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {DEPTH_TIERS.map(tier => (
+                      <button
+                        key={tier.value}
+                        type="button"
+                        onClick={() => setAnalysisDepth(tier.value)}
+                        className={`px-2 py-3 border font-mono text-center transition-all ${
+                          analysisDepth === tier.value
+                            ? 'border-gold bg-gold/10 text-gold'
+                            : 'border-white/10 text-muted hover:bg-white/5'
+                        }`}
+                      >
+                        <span className="block text-[11px] font-bold tracking-widest">{tier.label.toUpperCase()}</span>
+                        <span className="block text-[9px] mt-1 opacity-70">{tier.credits} CREDIT{tier.credits > 1 ? 'S' : ''}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="font-mono text-[9px] text-dim mt-1.5 tracking-wider">{selectedDepthTier.description}</p>
                 </div>
                 
                 <div className="flex gap-3 pt-4">
@@ -235,10 +363,12 @@ export default function Dashboard() {
                   </button>
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || (credits !== null && credits < selectedDepthTier.credits)}
                     className="flex-1 bg-violet-600 hover:bg-violet-500 text-white font-mono font-bold text-[10px] tracking-widest py-3 uppercase transition-colors disabled:opacity-50"
                   >
-                    {isSubmitting ? 'UPLOADING...' : 'INITIATE RECON'}
+                    {isSubmitting ? 'UPLOADING...' : 
+                     credits !== null && credits < selectedDepthTier.credits ? 'INSUFFICIENT CREDITS' :
+                     `INITIATE RECON (${selectedDepthTier.credits}CR)`}
                   </button>
                 </div>
               </form>
@@ -246,6 +376,15 @@ export default function Dashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Purchase Modal ──────────────────────────────────── */}
+      <PurchaseModal
+        isOpen={isPurchaseOpen}
+        onClose={() => setIsPurchaseOpen(false)}
+        onSuccess={(addedCredits) => {
+          setCredits(prev => (prev ?? 0) + addedCredits);
+        }}
+      />
     </div>
   );
 }
