@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     console.log(`[PDF] ✅ PDF generated: ${pdfBuffer.length} bytes`);
 
     // Return the PDF as binary
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(Buffer.from(pdfBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

@@ -55,36 +55,14 @@ export default function PurchaseModal({ isOpen, onClose, onSuccess }: PurchaseMo
     setStep('processing');
 
     try {
-      const endpoint = `/api/payments/${selectedGateway}/create`;
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planId: selectedPlan.id,
-          userId: user.$id,
-          userEmail: user.email,
-          userName: user.name,
-        }),
+      const { createOrder } = await import('@/lib/api');
+      const data = await createOrder({
+        tier: selectedPlan.id as 'personal' | 'pro' | 'organization' | 'adhoc',
+        email: user.email,
+        gateway: selectedGateway,
       });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Payment failed');
-      }
-
-      const data = await response.json();
-
-      // ── Gateway-specific checkout ──────────────────────────
-      
-      if (selectedGateway === 'cashfree' && data.paymentSessionId) {
-        // Load Cashfree SDK dynamically
-        const { load } = await import('@cashfreepayments/cashfree-js');
-        const cashfree = await load({ mode: process.env.CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox' });
-        await cashfree.checkout({
-          paymentSessionId: data.paymentSessionId,
-          returnUrl: `${window.location.origin}/dashboard?payment=success&credits=${data.credits}`,
-        });
-      } else if (selectedGateway === 'razorpay' && data.orderId) {
+      if (selectedGateway === 'razorpay') {
         // Load Razorpay SDK dynamically
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -93,17 +71,20 @@ export default function PurchaseModal({ isOpen, onClose, onSuccess }: PurchaseMo
         await new Promise(resolve => { script.onload = resolve; });
         
         const options = {
-          key: data.keyId,
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_SeWtXeZ4mEpi7y',
           amount: data.amount,
-          currency: data.currency,
+          currency: 'INR',
           name: 'PsyProfiler.io',
-          description: `${data.plan} Plan - ${data.credits} Credits`,
-          order_id: data.orderId,
-          prefill: data.prefill,
+          description: `${selectedPlan.name} Plan - ${selectedPlan.credits} Credits`,
+          order_id: data.order_id,
+          prefill: {
+            email: user.email,
+            name: user.name,
+          },
           theme: { color: '#a855f7' },
           handler: (response: any) => {
             console.log('[RAZORPAY] Payment success:', response);
-            onSuccess?.(data.credits);
+            onSuccess?.(selectedPlan.credits);
             onClose();
           },
           modal: {
@@ -117,9 +98,18 @@ export default function PurchaseModal({ isOpen, onClose, onSuccess }: PurchaseMo
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
         return; // Don't close modal — Razorpay handles it
-      } else if (selectedGateway === 'paypal' && data.checkoutUrl) {
-        // Redirect to PayPal
-        window.location.href = data.checkoutUrl;
+
+      } else if (selectedGateway === 'cashfree') {
+        if (!data.payment_session_id) throw new Error("Missing Cashfree Session ID");
+        const { load } = await import('@cashfreepayments/cashfree-js');
+        const cashfree = await load({ mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox' });
+        await cashfree.checkout({
+          paymentSessionId: data.payment_session_id,
+          returnUrl: `${window.location.origin}/dashboard?payment=success&credits=${selectedPlan.credits}`,
+        });
+      } else if (selectedGateway === 'paypal') {
+        if (!data.checkout_url) throw new Error("Missing PayPal Checkout URL");
+        window.location.href = data.checkout_url;
         return;
       }
 
