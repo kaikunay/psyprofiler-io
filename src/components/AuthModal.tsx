@@ -18,7 +18,10 @@ export default function AuthModal() {
 
   const handleOAuth = async (provider: OAuthProvider) => {
     try {
-      account.createOAuth2Session(
+      // Modern flow: createOAuth2Token redirects to provider,
+      // then returns to success URL with ?userId=xxx&secret=yyy
+      // AuthContext.tsx handles finalizing the session from those params.
+      account.createOAuth2Token(
         provider,
         `${window.location.origin}/dashboard`,
         `${window.location.origin}/`

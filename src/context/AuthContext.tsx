@@ -35,7 +35,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const completeLoginAndCheckSession = async () => {
-      // Check for magic link parameters in the URL
       if (typeof window !== "undefined") {
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get("userId");
@@ -43,11 +42,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (userId && secret) {
           try {
-            await account.updateMagicURLSession(userId, secret);
+            // This handles BOTH:
+            // 1. OAuth2 token flow (from createOAuth2Token) — Google/GitHub sign-in
+            // 2. Magic URL flow (from createMagicURLToken) — email magic link
+            // Both return userId + secret params; createSession works for both.
+            await account.createSession(userId, secret);
             // Clean the URL without causing a page reload
             window.history.replaceState({}, document.title, window.location.pathname);
           } catch (error) {
-            console.error("Magic link verification failed:", error);
+            console.error("Session creation from callback failed:", error);
           }
         }
       }
