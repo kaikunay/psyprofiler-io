@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Databases, ID, Query } from 'node-appwrite';
+import { addCredits } from '@/lib/credits';
 
 // ── PayPal API ────────────────────────────────────────────────
 
@@ -104,18 +104,6 @@ async function verifyPayPalWebhook(
     return false;
   }
 }
-
-// ── Appwrite Server Client ────────────────────────────────────
-
-function getServerDB(): Databases {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || 'psy-profiler-backend')
-    .setKey(process.env.APPWRITE_API_KEY || '');
-  return new Databases(client);
-}
-
-const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'psyprofiler-db';
 
 // ── POST Handler ──────────────────────────────────────────────
 
@@ -210,53 +198,22 @@ export async function POST(request: NextRequest) {
 
   console.log(`[PP-WEBHOOK] Processing: capture=${captureId} | user=${userId} | $${captureAmount} | +${creditsToAdd} credits`);
 
-  // 7. Write to Appwrite
-  const db = getServerDB();
-
+  // 7. Write via lib/credits
   try {
-    // ── 7a. Log the transaction ────────────────────────────
-    await db.createDocument(DB_ID, 'transactions', ID.unique(), {
-      userId,
-      orderId,
-      gateway: 'paypal',
-      amount: captureAmount,
-      currency: captureCurrency,
-      status: 'success',
-      creditsAdded: creditsToAdd,
-      createdAt: new Date().toISOString(),
-    });
+    const success = await addCredits(userId, creditsToAdd, `paypal_${captureId}`);
 
-    // ── 7b. Increment user credit balance ──────────────────
-    const existing = await db.listDocuments(DB_ID, 'user_credits', [
-      Query.equal('userId', userId),
-      Query.limit(1),
-    ]);
-
-    if (existing.documents.length > 0) {
-      const doc = existing.documents[0];
-      await db.updateDocument(DB_ID, 'user_credits', doc.$id, {
-        credits: (doc.credits || 0) + creditsToAdd,
-        totalPurchased: (doc.totalPurchased || 0) + creditsToAdd,
-      });
-      console.log(`[PP-WEBHOOK] ✅ Updated: ${doc.credits} → ${(doc.credits || 0) + creditsToAdd} credits for ${userId}`);
-    } else {
-      await db.createDocument(DB_ID, 'user_credits', ID.unique(), {
-        userId,
-        credits: creditsToAdd,
-        totalPurchased: creditsToAdd,
-        totalUsed: 0,
-      });
+    if (success) {
       console.log(`[PP-WEBHOOK] ✅ Created credit record: ${creditsToAdd} credits for ${userId}`);
+      return NextResponse.json({
+        status: 'ok',
+        captureId,
+        creditsAdded: creditsToAdd,
+      });
+    } else {
+      throw new Error('addCredits failed');
     }
-
-    return NextResponse.json({
-      status: 'ok',
-      captureId,
-      creditsAdded: creditsToAdd,
-    });
-
   } catch (error) {
-    console.error('[PP-WEBHOOK] ❌ Appwrite write failed:', error);
+    console.error('[PP-WEBHOOK] ❌ DB write failed:', error);
     return NextResponse.json({
       status: 'error',
       message: 'Credit update failed — will reconcile',

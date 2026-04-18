@@ -13,19 +13,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { Client, Databases, ID, Query } from 'node-appwrite';
-
-// ── Appwrite Server Client ────────────────────────────────────
-
-function getServerDB(): Databases {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || 'psy-profiler-backend')
-    .setKey(process.env.APPWRITE_API_KEY || '');
-  return new Databases(client);
-}
-
-const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'psyprofiler-db';
+import { addCredits } from '@/lib/credits';
 
 // ── Signature Verification ────────────────────────────────────
 
@@ -139,54 +127,22 @@ export async function POST(request: NextRequest) {
 
   console.log(`[CF-WEBHOOK] Processing: order=${orderId} | user=${userId} | ₹${paymentAmount} | +${creditsToAdd} credits`);
 
-  // 8. Write to Appwrite
-  const db = getServerDB();
-
+  // 8. Write via lib/credits
   try {
-    // ── 8a. Log the transaction ────────────────────────────
-    await db.createDocument(DB_ID, 'transactions', ID.unique(), {
-      userId,
-      orderId,
-      gateway: 'cashfree',
-      amount: paymentAmount,
-      currency: 'INR',
-      status: 'success',
-      creditsAdded: creditsToAdd,
-      createdAt: new Date().toISOString(),
-    });
+    const success = await addCredits(userId, creditsToAdd, `cashfree_${paymentId || orderId}`);
 
-    // ── 8b. Increment user credit balance ──────────────────
-    const existing = await db.listDocuments(DB_ID, 'user_credits', [
-      Query.equal('userId', userId),
-      Query.limit(1),
-    ]);
-
-    if (existing.documents.length > 0) {
-      const doc = existing.documents[0];
-      await db.updateDocument(DB_ID, 'user_credits', doc.$id, {
-        credits: (doc.credits || 0) + creditsToAdd,
-        totalPurchased: (doc.totalPurchased || 0) + creditsToAdd,
-      });
-      console.log(`[CF-WEBHOOK] ✅ Updated credits: ${doc.credits} → ${(doc.credits || 0) + creditsToAdd} for user ${userId}`);
-    } else {
-      // First purchase — create credit record
-      await db.createDocument(DB_ID, 'user_credits', ID.unique(), {
-        userId,
-        credits: creditsToAdd,
-        totalPurchased: creditsToAdd,
-        totalUsed: 0,
-      });
+    if (success) {
       console.log(`[CF-WEBHOOK] ✅ Created credit record: ${creditsToAdd} credits for user ${userId}`);
+      return NextResponse.json({
+        status: 'ok',
+        orderId,
+        creditsAdded: creditsToAdd,
+      });
+    } else {
+      throw new Error('addCredits failed');
     }
-
-    return NextResponse.json({
-      status: 'ok',
-      orderId,
-      creditsAdded: creditsToAdd,
-    });
-
   } catch (error) {
-    console.error('[CF-WEBHOOK] ❌ Appwrite write failed:', error);
+    console.error('[CF-WEBHOOK] ❌ DB write failed:', error);
     // Return 200 anyway to prevent Cashfree from retrying indefinitely
     // (we log the error and can reconcile manually)
     return NextResponse.json({

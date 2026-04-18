@@ -160,7 +160,7 @@ export default function PrivacyPage() {
                     <td className="py-2">Analysis input data</td>
                   </tr>
                   <tr className="border-b border-violet-500/10">
-                    <td className="py-2 pr-4 text-ink">Appwrite</td>
+                    <td className="py-2 pr-4 text-ink">Vercel Postgres</td>
                     <td className="py-2 pr-4">Authentication, database, file storage</td>
                     <td className="py-2">Account data, reports</td>
                   </tr>
@@ -284,7 +284,7 @@ export default function PrivacyPage() {
               Your data may be processed in the following locations:
             </p>
             <ul>
-              <li><strong className="text-ink">India:</strong> Primary data storage and platform operations (Appwrite, application servers)</li>
+              <li><strong className="text-ink">India/US:</strong> Primary data storage and platform operations (Vercel Postgres)</li>
               <li><strong className="text-ink">United States:</strong> Google Cloud Platform (Vertex AI) for AI processing</li>
             </ul>
             <p>

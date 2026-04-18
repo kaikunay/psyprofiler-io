@@ -8,21 +8,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Databases } from 'node-appwrite';
+import prisma from '@/lib/prisma';
 import type { ProfileResponse, ProfileReport } from '@/lib/agents/types';
-
-// ── Server Appwrite Client ────────────────────────────────────
-
-function getServerDB() {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
-
-  const apiKey = process.env.APPWRITE_API_KEY;
-  if (apiKey) client.setKey(apiKey);
-
-  return new Databases(client);
-}
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth-config";
 
 // ── GET /api/profiles/[id] ────────────────────────────────────
 
@@ -41,26 +30,49 @@ export async function GET(
       }, { status: 400 });
     }
 
-    const databases = getServerDB();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
-    const profilesCollection = process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles';
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json<ProfileResponse>({
+        success: false,
+        profile: { id: '', targetName: '', status: 'failed', createdAt: '' },
+        error: 'Unauthorized',
+      }, { status: 401 });
+    }
 
-    const doc = await databases.getDocument(dbId, profilesCollection, id);
+    const doc = await prisma.profile.findUnique({
+      where: { id },
+    });
+
+    if (doc && doc.userId !== (session.user as any).id) {
+      return NextResponse.json<ProfileResponse>({
+        success: false,
+        profile: { id: '', targetName: '', status: 'failed', createdAt: '' },
+        error: 'Forbidden',
+      }, { status: 403 });
+    }
+
+    if (!doc) {
+      return NextResponse.json<ProfileResponse>({
+        success: false,
+        profile: { id: '', targetName: '', status: 'failed', createdAt: '' },
+        error: 'Profile not found',
+      }, { status: 404 });
+    }
 
     const response: ProfileResponse = {
       success: true,
       profile: {
-        id: doc.$id,
-        targetName: doc.targetName || doc.target || 'Unknown',
-        status: doc.status || 'queued',
-        createdAt: doc.$createdAt,
+        id: doc.id,
+        targetName: doc.targetName || doc.targetUsername || 'Unknown',
+        status: (doc.status as any) || 'queued',
+        createdAt: doc.createdAt.toISOString(),
       },
     };
 
     // If completed, parse and include the report data
-    if (doc.status === 'completed' && doc.reportData) {
+    if (doc.status === 'completed' && doc.aiAnalysis) {
       try {
-        response.report = JSON.parse(doc.reportData) as ProfileReport;
+        response.report = (typeof doc.aiAnalysis === 'string' ? JSON.parse(doc.aiAnalysis) : doc.aiAnalysis) as ProfileReport;
       } catch {
         console.error('[API] Failed to parse stored report data');
       }
@@ -69,14 +81,6 @@ export async function GET(
     return NextResponse.json<ProfileResponse>(response);
 
   } catch (error: any) {
-    if (error?.code === 404) {
-      return NextResponse.json<ProfileResponse>({
-        success: false,
-        profile: { id: '', targetName: '', status: 'failed', createdAt: '' },
-        error: 'Profile not found',
-      }, { status: 404 });
-    }
-
     console.error('[API] /api/profiles/[id] error:', error);
     return NextResponse.json<ProfileResponse>({
       success: false,

@@ -1,21 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
-import { Client, Databases, ID, Permission, Role, Query } from 'node-appwrite';
+import { PrismaClient } from '@prisma/client';
 
-// Server-side Appwrite client (uses API key, not cookies)
-function getAppwriteClient() {
-  const client = new Client()
-    .setEndpoint('https://nyc.cloud.appwrite.io/v1')
-    .setProject('psy-profiler-backend');
-
-  const apiKey = process.env.APPWRITE_API_KEY;
-  if (apiKey) client.setKey(apiKey);
-  return new Databases(client);
-}
-
-const DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || 'psyprofiler-db';
-const PROFILES_COL = process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles';
+const prisma = new PrismaClient();
 
 // GET /api/profiles — list all profiles for the authenticated user
 export async function GET() {
@@ -25,11 +13,23 @@ export async function GET() {
   }
 
   try {
-    const db = getAppwriteClient();
-    const response = await db.listDocuments(DB_ID, PROFILES_COL, [
-      Query.orderDesc('$createdAt'),
-    ]);
-    return NextResponse.json(response);
+    const userId = (session.user as any).id || session.user.email;
+    const profiles = await prisma.profile.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+    
+    // Map Prisma objects to match the old Appwrite structure expected by the frontend
+    const documents = profiles.map(p => ({
+      $id: p.id,
+      targetName: p.targetName,
+      status: p.status,
+      $createdAt: p.createdAt,
+      reportUrl: p.reportUrl,
+      userId: p.userId
+    }));
+
+    return NextResponse.json({ documents });
   } catch (error) {
     console.error('[API/profiles] List error:', error);
     return NextResponse.json({ documents: [] });
@@ -45,15 +45,37 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const db = getAppwriteClient();
+    const userId = body.userId || (session.user as any).id || session.user.email;
 
-    const doc = await db.createDocument(DB_ID, PROFILES_COL, ID.unique(), {
-      userId: body.userId || (session.user as any).id || session.user.email,
-      targetName: body.targetName,
-      status: body.status || 'queued',
+    // First ensure the User exists in Prisma
+    await prisma.user.upsert({
+      where: { email: session.user.email || '' },
+      update: {},
+      create: {
+        email: session.user.email || '',
+        name: session.user.name,
+        image: session.user.image,
+        credits: 2
+      }
     });
 
-    return NextResponse.json(doc);
+    const newProfile = await prisma.profile.create({
+      data: {
+        userId: userId,
+        targetName: body.targetName || 'Unknown Target',
+        status: body.status || 'queued',
+      }
+    });
+
+    // Map back for the frontend
+    return NextResponse.json({
+      $id: newProfile.id,
+      targetName: newProfile.targetName,
+      status: newProfile.status,
+      $createdAt: newProfile.createdAt,
+      reportUrl: newProfile.reportUrl,
+      userId: newProfile.userId
+    });
   } catch (error) {
     console.error('[API/profiles] Create error:', error);
     return NextResponse.json({ error: 'Failed to create profile' }, { status: 500 });

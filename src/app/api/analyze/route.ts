@@ -5,32 +5,26 @@
  * 
  * POST: Triggers the full intelligence pipeline for a target.
  * Accepts profile data, validates credits, runs the pipeline,
- * and stores the report in Appwrite.
+ * and stores the report.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Databases, Users } from 'node-appwrite';
+import prisma from '@/lib/prisma';
 import { executeFullPipeline } from '@/lib/agents/orchestrator';
 import { deductCredits } from '@/lib/credits';
 import type { AnalyzeRequest, AnalyzeResponse, TargetInput } from '@/lib/agents/types';
-
-// ── Server Appwrite Client ────────────────────────────────────
-
-function getServerDB() {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
-
-  const apiKey = process.env.APPWRITE_API_KEY;
-  if (apiKey) client.setKey(apiKey);
-
-  return new Databases(client);
-}
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth-config";
 
 // ── POST /api/analyze ─────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, status: 'failed', message: 'Unauthorized. Please check your credentials.', profileId: '' }, { status: 401 });
+    }
+
     const body: AnalyzeRequest = await request.json();
     const { profileId, targetName, targetUrl, platform, reportType, analysisDepth = 'scout' } = body;
 
@@ -46,20 +40,28 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract userId from the profile document (for credit deduction)
-    const databases = getServerDB();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
-    const profilesCollection = process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles';
-
     let userId = '';
+    let targetEmail = '';
+    
     try {
-      const profileDoc = await databases.getDocument(dbId, profilesCollection, profileId);
-      userId = profileDoc.userId || '';
+      const profileDoc = await prisma.profile.findUnique({
+        where: { id: profileId },
+        include: { user: true }
+      });
+      if (profileDoc) {
+        if (profileDoc.userId !== (session.user as any).id) {
+          return NextResponse.json({ success: false, status: 'failed', message: 'Forbidden. Profile does not belong to you.', profileId: profileId }, { status: 403 });
+        }
+        userId = profileDoc.userId;
+        targetEmail = profileDoc.user?.email || '';
+      } else {
+        userId = (session.user as any).id;
+      }
     } catch {
-      // Profile might not exist yet in dev
-      userId = 'dev-user';
+      userId = (session.user as any).id;
     }
 
-    // Deduct credits (skip in dev if no collection exists)
+    // Deduct credits (skip in dev if no user exists)
     const creditDeducted = await deductCredits(userId, analysisDepth);
     if (!creditDeducted && process.env.NODE_ENV !== 'development') {
       return NextResponse.json<AnalyzeResponse>({
@@ -73,8 +75,9 @@ export async function POST(request: NextRequest) {
 
     // Update profile status to 'intake'
     try {
-      await databases.updateDocument(dbId, profilesCollection, profileId, {
-        status: 'intake',
+      await prisma.profile.update({
+        where: { id: profileId },
+        data: { status: 'intake' }
       });
     } catch {
       console.warn('[API] Could not update profile status — continuing anyway');
@@ -93,11 +96,13 @@ export async function POST(request: NextRequest) {
         userId,
       } as TargetInput,
       async (status, message) => {
-        // Update profile status in Appwrite as pipeline progresses
+        // Update profile status as pipeline progresses
         try {
-          await databases.updateDocument(dbId, profilesCollection, profileId, {
-            status,
-            statusMessage: message,
+          // Store status in DB if needed. Currently we only have one status field, 
+          // Appwrite had statusMessage which we don't have in Prisma yet. So we can update status.
+          await prisma.profile.update({
+            where: { id: profileId },
+            data: { status }
           });
         } catch {
           console.warn(`[API] Status update to '${status}' failed`);
@@ -110,30 +115,17 @@ export async function POST(request: NextRequest) {
     pipelinePromise
       .then(async (report) => {
         try {
-          await databases.updateDocument(dbId, profilesCollection, profileId, {
-            status: 'completed',
-            statusMessage: 'Intelligence report ready',
-            reportData: JSON.stringify(report),
-            completedAt: new Date().toISOString(),
+          await prisma.profile.update({
+            where: { id: profileId },
+            data: {
+              status: 'completed',
+              aiAnalysis: report as any,
+            }
           });
           console.log(`[API] ✅ Report stored for profile ${profileId}`);
 
           // --- N8N WEBHOOK TRIGGER ---
           try {
-            const client = new Client()
-              .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
-              .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
-            const apiKey = process.env.APPWRITE_SERVER_API_KEY || process.env.APPWRITE_API_KEY;
-            if (apiKey) client.setKey(apiKey);
-            
-            const users = new Users(client);
-            let targetEmail = '';
-            
-            if (userId && userId !== 'dev-user') {
-              const userAcct = await users.get(userId);
-              targetEmail = userAcct.email;
-            }
-
             const webhookUrl = process.env.N8N_URL;
             if (webhookUrl && targetEmail) {
                console.log(`[API] Triggering n8n webhook for ${profileId}...`);
@@ -161,9 +153,9 @@ export async function POST(request: NextRequest) {
       .catch(async (err) => {
         console.error('[API] Pipeline failed:', err);
         try {
-          await databases.updateDocument(dbId, profilesCollection, profileId, {
-            status: 'failed',
-            statusMessage: err instanceof Error ? err.message : 'Pipeline failed',
+          await prisma.profile.update({
+            where: { id: profileId },
+            data: { status: 'failed' }
           });
         } catch {
           console.error('[API] Could not update failed status');

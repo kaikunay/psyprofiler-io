@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client, Databases } from 'node-appwrite';
+import prisma from '@/lib/prisma';
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -10,18 +10,6 @@ import { Client, Databases } from 'node-appwrite';
  * This triggers the n8n webhook positioned on Azure D8s_v5 VM,
  * which takes over headless PDF rendering and email delivery.
  */
-
-// Server Appwrite Client
-function getServerDB() {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
-
-  if (process.env.APPWRITE_API_KEY) {
-    client.setKey(process.env.APPWRITE_API_KEY);
-  }
-  return new Databases(client);
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,18 +26,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Verify profile is complete in DB
-    const db = getServerDB();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
-    const colId = process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles';
-    
-    let doc;
-    try {
-      doc = await db.getDocument(dbId, colId, profileId);
-      if (doc.status !== 'completed') {
-        return NextResponse.json({ error: 'Profile not completed' }, { status: 400 });
-      }
-    } catch {
+    const doc = await prisma.profile.findUnique({
+      where: { id: profileId },
+    });
+
+    if (!doc) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+    }
+
+    if (doc.status !== 'completed') {
+      return NextResponse.json({ error: 'Profile not completed' }, { status: 400 });
     }
 
     // 2. Transmit signal to n8n Nervous System (Azure VM)

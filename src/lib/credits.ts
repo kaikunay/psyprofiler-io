@@ -10,7 +10,7 @@
  *   Oracle → 5 credits
  */
 
-import { Client, Databases, Query } from 'node-appwrite';
+import prisma from './prisma';
 import type { AnalysisDepth } from './agents/types';
 
 // ── Constants ─────────────────────────────────────────────────
@@ -23,46 +23,40 @@ export const CREDIT_COSTS: Record<AnalysisDepth, number> = {
 
 export const FREE_CREDITS = 3; // New user welcome credits
 
-// ── Server-side Appwrite Client ───────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 
-function getServerClient(): { databases: Databases } {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || '')
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
-
-  const apiKey = process.env.APPWRITE_API_KEY;
-  if (apiKey) {
-    client.setKey(apiKey);
-  }
-
-  return { databases: new Databases(client) };
+async function findUser(userIdOrEmail: string) {
+  return await prisma.user.findFirst({
+    where: {
+      OR: [
+        { id: userIdOrEmail },
+        { email: userIdOrEmail },
+      ],
+    },
+  });
 }
 
 // ── Credit Operations ─────────────────────────────────────────
 
 export async function getUserCredits(userId: string): Promise<number> {
   try {
-    const { databases } = getServerClient();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
+    const user = await findUser(userId);
 
-    // Look for user credits document
-    const docs = await databases.listDocuments(dbId, 'user_credits', [
-      Query.equal('userId', userId),
-      Query.limit(1),
-    ]);
-
-    if (docs.documents.length === 0) {
-      // First time — create with free credits
-      await databases.createDocument(dbId, 'user_credits', 'unique()', {
-        userId,
-        credits: FREE_CREDITS,
-        totalPurchased: 0,
-        totalUsed: 0,
-      });
-      return FREE_CREDITS;
+    if (!user) {
+      // First time — create with free credits if it's an email
+      if (userId.includes('@')) {
+        const newUser = await prisma.user.create({
+          data: {
+            email: userId,
+            credits: FREE_CREDITS,
+          }
+        });
+        return newUser.credits;
+      }
+      return 0;
     }
 
-    return docs.documents[0].credits || 0;
+    return user.credits || 0;
   } catch (error) {
     console.error('[CREDITS] Failed to get user credits:', error);
     // Fail open in dev — allow analysis even if credit check fails
@@ -74,25 +68,26 @@ export async function getUserCredits(userId: string): Promise<number> {
 export async function deductCredits(userId: string, depth: AnalysisDepth): Promise<boolean> {
   try {
     const cost = CREDIT_COSTS[depth];
-    const { databases } = getServerClient();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
+    const user = await findUser(userId);
 
-    const docs = await databases.listDocuments(dbId, 'user_credits', [
-      Query.equal('userId', userId),
-      Query.limit(1),
-    ]);
-
-    if (docs.documents.length === 0) return false;
-
-    const doc = docs.documents[0];
-    const currentCredits = doc.credits || 0;
-
+    if (!user) return false;
+    
+    const currentCredits = user.credits || 0;
     if (currentCredits < cost) return false;
 
-    await databases.updateDocument(dbId, 'user_credits', doc.$id, {
-      credits: currentCredits - cost,
-      totalUsed: (doc.totalUsed || 0) + cost,
-    });
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { credits: currentCredits - cost },
+      }),
+      prisma.creditHistory.create({
+        data: {
+          userId: user.id,
+          amount: -cost,
+          reason: `profile_generation_${depth}`,
+        }
+      })
+    ]);
 
     return true;
   } catch (error) {
@@ -103,30 +98,36 @@ export async function deductCredits(userId: string, depth: AnalysisDepth): Promi
   }
 }
 
-export async function addCredits(userId: string, amount: number): Promise<boolean> {
+export async function addCredits(userId: string, amount: number, stripeId?: string): Promise<boolean> {
   try {
-    const { databases } = getServerClient();
-    const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
+    let user = await findUser(userId);
 
-    const docs = await databases.listDocuments(dbId, 'user_credits', [
-      Query.equal('userId', userId),
-      Query.limit(1),
-    ]);
-
-    if (docs.documents.length === 0) {
-      await databases.createDocument(dbId, 'user_credits', 'unique()', {
-        userId,
-        credits: amount,
-        totalPurchased: amount,
-        totalUsed: 0,
-      });
+    if (!user) {
+      if (userId.includes('@')) {
+        user = await prisma.user.create({
+          data: {
+            email: userId,
+            credits: amount,
+          }
+        });
+      } else {
+        return false;
+      }
     } else {
-      const doc = docs.documents[0];
-      await databases.updateDocument(dbId, 'user_credits', doc.$id, {
-        credits: (doc.credits || 0) + amount,
-        totalPurchased: (doc.totalPurchased || 0) + amount,
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { credits: (user.credits || 0) + amount },
       });
     }
+
+    await prisma.creditHistory.create({
+      data: {
+        userId: user.id,
+        amount: amount,
+        reason: 'purchase',
+        stripeId: stripeId,
+      }
+    });
 
     return true;
   } catch (error) {
