@@ -1,10 +1,11 @@
 // src/lib/api.ts
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || '';
 
 export interface OrderCreateRequest {
-  tier: 'personal' | 'pro' | 'organization' | 'adhoc';
+  tier: string;
   email: string;
+  userId?: string;
   gateway: 'razorpay' | 'cashfree' | 'paypal';
 }
 
@@ -19,29 +20,33 @@ export interface ProfilerRequest {
 }
 
 export const createOrder = async (data: OrderCreateRequest) => {
-  const response = await fetch(`${API_BASE_URL}/api/order/create`, {
+  const response = await fetch(`${API_BASE_URL}/api/payments/${data.gateway}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      planId: data.tier,
+      userEmail: data.email,
+      userId: data.userId,
+    }),
   });
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.detail || 'Failed to create order');
+    throw new Error(errorData?.error || errorData?.detail || 'Failed to create order');
   }
   return response.json();
 };
 
 export const submitQuestionnaire = async (orderId: string, data: ProfilerRequest) => {
-  const response = await fetch(`${API_BASE_URL}/api/submit?order_id=${orderId}`, {
+  const response = await fetch(`${API_BASE_URL}/api/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, orderId }),
   });
   
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.detail || 'Failed to submit questionnaire');
+    throw new Error(errorData?.error || errorData?.detail || 'Failed to submit analysis request');
   }
   return response.json();
 };

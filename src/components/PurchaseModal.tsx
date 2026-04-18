@@ -82,10 +82,30 @@ export default function PurchaseModal({ isOpen, onClose, onSuccess }: PurchaseMo
             name: user.name,
           },
           theme: { color: '#a855f7' },
-          handler: (response: any) => {
+          handler: async (response: any) => {
             console.log('[RAZORPAY] Payment success:', response);
-            onSuccess?.(selectedPlan.credits);
-            onClose();
+            setIsProcessing(true);
+            try {
+              const res = await fetch('/api/payments/razorpay-verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ...response,
+                  planId: selectedPlan.id,
+                  userId: user.id || user.email,
+                }),
+              });
+              
+              if (!res.ok) throw new Error('Verification failed');
+              
+              onSuccess?.(selectedPlan.credits);
+              onClose();
+            } catch (e) {
+              console.error('Verify error:', e);
+              setError('Payment verified but credit assignment failed. Please contact support.');
+              setIsProcessing(false);
+              setStep('gateway');
+            }
           },
           modal: {
             ondismiss: () => {
