@@ -4,8 +4,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { databases, ID } from "@/lib/appwrite";
-import { Permission, Role, Query } from "appwrite";
 import PurchaseModal from "@/components/PurchaseModal";
 
 import type { ReportType, AnalysisDepth, AnalysisStatus } from '@/lib/agents/types';
@@ -78,15 +76,12 @@ export default function Dashboard() {
   const fetchCredits = useCallback(async () => {
     if (!user) return;
     try {
-      const dbId = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!;
-      const docs = await databases.listDocuments(dbId, 'user_credits', [
-        Query.equal('userId', user.$id),
-        Query.limit(1),
-      ]);
-      if (docs.documents.length > 0) {
-        setCredits(docs.documents[0].credits ?? 0);
+      const res = await fetch('/api/credits');
+      if (res.ok) {
+        const data = await res.json();
+        setCredits(data.credits ?? 3);
       } else {
-        setCredits(3); // New users get 3 free
+        setCredits(3); // Default: 3 free credits for new users
       }
     } catch {
       setCredits(3); // Default fallback
@@ -95,12 +90,11 @@ export default function Dashboard() {
 
   const fetchProfiles = async () => {
     try {
-      const response = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles',
-        [Query.orderDesc("$createdAt")]
-      );
-      setProfiles(response.documents as unknown as ProfileDocument[]);
+      const res = await fetch('/api/profiles');
+      if (res.ok) {
+        const data = await res.json();
+        setProfiles(data.documents || []);
+      }
     } catch (error) {
       console.error("Failed to fetch profiles:", error);
     } finally {
@@ -124,26 +118,24 @@ export default function Dashboard() {
     setIsSubmitting(true);
     
     try {
-      const doc = await databases.createDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_PROFILES_COLLECTION_ID || 'profiles',
-        ID.unique(),
-        {
+      // Create profile via API route
+      const createRes = await fetch('/api/profiles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           userId: user.$id,
-          targetName: targetName,
-          status: 'queued'
-        },
-        [
-          Permission.read(Role.user(user.$id))
-        ]
-      );
+          targetName,
+          status: 'queued',
+        }),
+      });
+      const doc = await createRes.json();
 
       // Trigger the intelligence pipeline
       fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          profileId: doc.$id,
+          profileId: doc.$id || doc.id,
           targetName,
           targetUrl: targetUrl || undefined,
           reportType,
@@ -155,7 +147,7 @@ export default function Dashboard() {
       setTargetUrl("");
       setIsScanModalOpen(false);
       fetchProfiles();
-      fetchCredits(); // Refresh credits after scan
+      fetchCredits();
     } catch (error) {
       console.error("Failed to queue profile:", error);
       alert("Failed to queue intelligence report. Check console.");

@@ -1,11 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Models } from "appwrite";
-import { account } from "@/lib/appwrite";
+import React, { createContext, useContext, useState } from "react";
+import { useSession, signOut as nextAuthSignOut } from "next-auth/react";
+
+interface User {
+  $id: string;
+  email: string;
+  name: string;
+}
 
 interface AuthContextType {
-  user: Models.User<Models.Preferences> | null;
+  user: User | null;
   isLoading: boolean;
   isModalOpen: boolean;
   openAuthModal: () => void;
@@ -17,72 +22,42 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const checkSession = async () => {
-    try {
-      const currentAccount = await account.get();
-      setUser(currentAccount);
-    } catch (error) {
-      // User is not logged in / No session active
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const completeLoginAndCheckSession = async () => {
-      if (typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get("userId");
-        const secret = urlParams.get("secret");
-
-        if (userId && secret) {
-          try {
-            // This handles BOTH:
-            // 1. OAuth2 token flow (from createOAuth2Token) — Google/GitHub sign-in
-            // 2. Magic URL flow (from createMagicURLToken) — email magic link
-            // Both return userId + secret params; createSession works for both.
-            await account.createSession(userId, secret);
-            // Clean the URL without causing a page reload
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch (error) {
-            console.error("Session creation from callback failed:", error);
-          }
-        }
+  // Map NextAuth session to the User shape the rest of the app expects
+  const user: User | null = session?.user
+    ? {
+        $id: (session.user as any).id || session.user.email || "",
+        email: session.user.email || "",
+        name: session.user.name || "",
       }
-      
-      await checkSession();
-    };
+    : null;
 
-    completeLoginAndCheckSession();
-  }, []);
+  const isLoading = status === "loading";
 
   const openAuthModal = () => setIsModalOpen(true);
   const closeAuthModal = () => setIsModalOpen(false);
 
+  // NextAuth handles session management automatically
+  const checkSession = async () => {};
+
   const logout = async () => {
-    try {
-      await account.deleteSession("current");
-      setUser(null);
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await nextAuthSignOut({ callbackUrl: "/" });
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      isModalOpen,
-      openAuthModal,
-      closeAuthModal,
-      checkSession,
-      logout
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        isModalOpen,
+        openAuthModal,
+        closeAuthModal,
+        checkSession,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
