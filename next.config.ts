@@ -7,11 +7,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/n8n/:path*',
-        destination: 'http://40.81.230.135/n8n/:path*', // Azure VM IP
+        destination: 'http://143.244.135.83/n8n/:path*', // DigitalOcean Droplet IP
       },
       {
         source: '/sherlock/:path*',
-        destination: 'http://40.81.230.135/sherlock/:path*', // Azure VM IP
+        destination: 'http://143.244.135.83:8080/:path*', // DigitalOcean Droplet Sherlock port
       }
     ];
   },
